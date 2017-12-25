@@ -1,0 +1,32 @@
+{
+  "name": "git-parser",
+  "version": "0.1.1-alpha.1+nb",
+  "description": "gitコマンドの出力を解析して構造化します。",
+  "private": true,
+  "main": "libs/main.js",
+  "scripts": {
+    "start": "gulp watch",
+    "test": "mocha --ui tdd ./tests/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomk79/node-git-parser.git"
+  },
+  "author": "Tomoya Koyanagi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomk79/node-git-parser/issues"
+  },
+  "homepage": "https://github.com/tomk79/node-git-parser#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0",
+    "mocha": "^2.1.0"
+  }
+}
