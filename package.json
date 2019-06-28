@@ -18,8 +18,7 @@
     "url": "https://github.com/tomk79/node-git-parser/issues"
   },
   "homepage": "https://github.com/tomk79/node-git-parser#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "gulp": "^3.8.10",
     "gulp-browserify": "^0.5.1",

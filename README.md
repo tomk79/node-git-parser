@@ -15,16 +15,16 @@ var GitParser = require('git-parser'),
 
         var proc = require('child_process').spawn('git', cmdAry);
         proc.stdout.on('data', function(data){
-        stdout += data;
+            stdout += data;
         });
         proc.stderr.on('data', function(data){
-        stdout += data; // エラー出力も stdout に混ぜて送る
+            stdout += data; // エラー出力も stdout に混ぜて送る
         });
         proc.on('close', function(){
-        callback(stdout);
+            callback(stdout);
         });
 
-        process.chdir( _pathCurrentDir );
+        process.chdir( _pathCurrentDir ); // カレントディレクトリを戻す
         return;
     });
     gitParser.git(['status'], function(result){
