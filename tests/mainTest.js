@@ -1,7 +1,8 @@
-var assert = require('assert');
-var childProc = require('child_process');
-var GitParser = require('../libs/main.js'),
-	gitParser;
+const assert = require('assert');
+const childProc = require('child_process');
+const fsEx = require('fs-extra');
+const GitParser = require('../libs/main.js');
+let gitParser;
 
 describe('インスタンス初期化', function() {
 
@@ -13,7 +14,7 @@ describe('インスタンス初期化', function() {
 			var _pathCurrentDir = process.cwd();
 			process.chdir( __dirname+'/data/' );
 
-			var proc = require('child_process').spawn('git', cmdAry);
+			var proc = childProc.spawn('git', cmdAry);
 			proc.stdout.on('data', function(data){
 				stdout += data;
 			});
@@ -34,6 +35,7 @@ describe('インスタンス初期化', function() {
 });
 
 describe('git操作', function() {
+
 	it("git init", function(done) {
 		this.timeout(60*1000);
 
@@ -54,10 +56,25 @@ describe('git操作', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.untrackedFiles.length, 1);
+			assert.strictEqual(result.code, 0);
 
 			done();
 
 		});
+	});
+
+});
+
+describe('Cleaning', function() {
+
+	it("Clearning .git", function(done) {
+		this.timeout(60*1000);
+		fsEx.removeSync(__dirname+'/data/');
+		fsEx.mkdirSync(__dirname+'/data/');
+		fsEx.writeFileSync(__dirname+'/data/.gitkeep', '');
+
+		done();
 	});
 
 });
