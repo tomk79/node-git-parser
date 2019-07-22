@@ -8,8 +8,9 @@ module.exports = function(fncCallGit){
 		callback(0, '');
 	}
 	this.git = function(cmdAry, callback){
-		fncCallGit(cmdAry, function(stdout){
+		fncCallGit(cmdAry, function(code, stdout){
 			var rtn = {
+				'code': code,
 				'stdout': stdout
 			};
 			if(cmdAry[0] == 'init'){

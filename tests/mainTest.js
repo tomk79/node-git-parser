@@ -20,8 +20,8 @@ describe('インスタンス初期化', function() {
 			proc.stderr.on('data', function(data){
 				stdout += data; // エラー出力も stdout に混ぜて送る
 			});
-			proc.on('close', function(){
-				callback(stdout);
+			proc.on('close', function(code){
+				callback(code, stdout);
 			});
 
 			process.chdir( _pathCurrentDir );

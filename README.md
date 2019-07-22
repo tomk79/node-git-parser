@@ -20,8 +20,8 @@ var GitParser = require('git-parser'),
         proc.stderr.on('data', function(data){
             stdout += data; // エラー出力も stdout に混ぜて送る
         });
-        proc.on('close', function(){
-            callback(stdout);
+        proc.on('close', function(code){
+            callback(code, stdout);
         });
 
         process.chdir( _pathCurrentDir ); // カレントディレクトリを戻す
@@ -52,7 +52,7 @@ var gitParser = new GitParser(function(cmdAry, callback){
             stdout += data; // エラー出力も stdout に混ぜて送る
         },
         complete: function(){
-            callback(stdout);
+            callback(0, stdout);
         }
     });
     return;
@@ -65,7 +65,7 @@ gitParser.git(['status'], function(result){
 
 ## 更新履歴 - Change log
 
-### git-parser v0.1.0 (2018年??月??日)
+### git-parser v0.1.0 (リリース日未定)
 
 - Initial Release.
 
@@ -78,5 +78,5 @@ MIT License
 ## 作者 - Author
 
 - Tomoya Koyanagi <tomk79@gmail.com>
-- website: <http://www.pxt.jp/>
-- Twitter: @tomk79 <http://twitter.com/tomk79/>
+- website: <https://www.pxt.jp/>
+- Twitter: @tomk79 <https://twitter.com/tomk79/>
