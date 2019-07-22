@@ -56,8 +56,37 @@ describe('git操作', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
-			assert.strictEqual(result.untrackedFiles.length, 1);
 			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.untrackedFiles.length, 1);
+
+			done();
+
+		});
+	});
+
+	it("git add .", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['add', '.', '-v'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+
+			done();
+
+		});
+	});
+
+	it("git status", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['status'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.untrackedFiles.length, 0);
+			assert.strictEqual(result.newFiles.length, 1);
 
 			done();
 

@@ -11,18 +11,25 @@ module.exports = function(fncCallGit){
 		fncCallGit(cmdAry, function(code, stdout){
 			var rtn = {
 				'code': code,
-				'stdout': stdout
+				'stdout': stdout,
+				'errors': []
 			};
-			if(cmdAry[0] == 'init'){
-				_this.init(rtn, function(result){
-					callback(result);
-				});
-			}else if(cmdAry[0] == 'status'){
-				_this.status(rtn, function(result){
-					callback(result);
-				});
-			}else{
+			if( stdout.match(/^fatal\:\ ([\s\S]*)$/g) ){
+				rtn.errors.push( RegExp.$1 );
 				callback(rtn);
+				return;
+			}
+			switch( cmdAry[0] ){
+				case 'init':
+				case 'status':
+				case 'add':
+					_this[cmdAry[0]](rtn, function(result){
+						callback(result);
+					});
+					break;
+				default:
+					callback(rtn);
+					break;
 			}
 			return;
 		});
@@ -30,3 +37,4 @@ module.exports = function(fncCallGit){
 }
 module.exports.prototype.init = require('./parsers/init.js');
 module.exports.prototype.status = require('./parsers/status.js');
+module.exports.prototype.add = require('./parsers/add.js');
