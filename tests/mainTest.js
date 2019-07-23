@@ -153,6 +153,52 @@ describe('git操作', function() {
 		});
 	});
 
+	it("git add .", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['add', '.', '-v'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.added.length, 2);
+			assert.strictEqual(result.removed.length, 1);
+
+			done();
+
+		});
+	});
+
+	it("git commit", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['commit', '-m', '2nd Commit'+"\n\n"+'Commited by test code.'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+
+			done();
+
+		});
+	});
+
+	it("git status", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['status'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.currentBranchName, 'master');
+			assert.strictEqual(result.notStaged.untracked.length, 0);
+			assert.strictEqual(result.staged.untracked.length, 0);
+
+			done();
+
+		});
+	});
+
 });
 
 describe('Errors', function() {

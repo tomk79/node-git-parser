@@ -60,17 +60,20 @@ module.exports.prototype.commit = require('./parsers/commit.js');
 module.exports = function(result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
-    if( !result.stdout.length ){
-        callback(result);
-        return;
-    }
-	result.addedFiles = [];
+	if( !result.stdout.length ){
+		callback(result);
+		return;
+	}
+	result.added = [];
+	result.removed = [];
 
 	lines.forEach(function(line){
 
-        if( line.match(/^add\ \'([\s\S]*)\'$/g) ){
-            result.addedFiles.push( RegExp.$1 );
-        }
+		if( line.match(/^add\ \'([\s\S]*)\'$/g) ){
+			result.added.push( RegExp.$1 );
+		}else if( line.match(/^remove\ \'([\s\S]*)\'$/g) ){
+			result.removed.push( RegExp.$1 );
+		}
 	});
 
 	// console.log(result);
@@ -105,10 +108,14 @@ module.exports = function(result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	var phase = null;
-	result.untrackedFiles = [];
-	result.newFiles = [];
-	result.modifiedFiles = [];
-	result.deletedFiles = [];
+	result.staged = {};
+	result.staged.untracked = [];
+	result.staged.modified = [];
+	result.staged.deleted = [];
+	result.notStaged = {};
+	result.notStaged.untracked = [];
+	result.notStaged.modified = [];
+	result.notStaged.deleted = [];
 	// console.log(lines);
 
 	lines.forEach(function(line){
@@ -137,7 +144,31 @@ module.exports = function(result, callback){
 				return;
 			}
 			if( line.match(/^[\s]*([\s\S]*?)$/g) ){
-				result.untrackedFiles.push( RegExp.$1 );
+				result.notStaged.untracked.push( RegExp.$1 );
+				return;
+			}
+		}
+
+		// --------------------------------------
+		// Changes not staged for commit
+		if( line == 'Changes not staged for commit:' ){
+			phase = 'changes_not_staged_for_commit_standby';
+			return;
+		}else if(phase == 'changes_not_staged_for_commit_standby'){
+			if( !line.length ){
+				phase = 'changes_not_staged_for_commit';
+				return;
+			}
+		}else if(phase == 'changes_not_staged_for_commit'){
+			if( !line.length ){
+				phase = null;
+				return;
+			}
+			if( line.match(/^[\s]*modified\:[\s]+([\s\S]*?)$/g) ){
+				result.notStaged.modified.push( RegExp.$1 );
+				return;
+			}else if( line.match(/^[\s]*deleted\:[\s]+([\s\S]*?)$/g) ){
+				result.notStaged.deleted.push( RegExp.$1 );
 				return;
 			}
 		}
@@ -158,13 +189,13 @@ module.exports = function(result, callback){
 				return;
 			}
 			if( line.match(/^[\s]*new\ file\:[\s]+([\s\S]*?)$/g) ){
-				result.newFiles.push( RegExp.$1 );
+				result.staged.untracked.push( RegExp.$1 );
 				return;
 			}else if( line.match(/^[\s]*modified\:[\s]+([\s\S]*?)$/g) ){
-				result.modifiedFiles.push( RegExp.$1 );
+				result.staged.modified.push( RegExp.$1 );
 				return;
 			}else if( line.match(/^[\s]*deleted\:[\s]+([\s\S]*?)$/g) ){
-				result.deletedFiles.push( RegExp.$1 );
+				result.staged.deleted.push( RegExp.$1 );
 				return;
 			}
 		}
