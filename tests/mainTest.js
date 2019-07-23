@@ -62,7 +62,7 @@ describe('git操作', function() {
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
-			assert.strictEqual(result.untrackedFiles.length, 5);
+			assert.strictEqual(result.notStaged.untracked.length, 5);
 
 			done();
 
@@ -76,7 +76,7 @@ describe('git操作', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
-			assert.strictEqual(result.addedFiles.length, 5);
+			assert.strictEqual(result.added.length, 5);
 
 			done();
 
@@ -91,8 +91,8 @@ describe('git操作', function() {
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
-			assert.strictEqual(result.untrackedFiles.length, 0);
-			assert.strictEqual(result.newFiles.length, 5);
+			assert.strictEqual(result.notStaged.untracked.length, 0);
+			assert.strictEqual(result.staged.untracked.length, 5);
 
 			done();
 
@@ -122,8 +122,31 @@ describe('git操作', function() {
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.currentBranchName, 'master');
-			assert.strictEqual(result.untrackedFiles.length, 0);
-			assert.strictEqual(result.newFiles.length, 0);
+			assert.strictEqual(result.notStaged.untracked.length, 0);
+			assert.strictEqual(result.staged.untracked.length, 0);
+
+			done();
+
+		});
+	});
+
+	it("change file", function(done) {
+		this.timeout(60*1000);
+
+		fsEx.writeFileSync(__dirname+'/data/a.txt', 'master 2'+"\n");
+		fsEx.removeSync(__dirname+'/data/b.txt');
+		fsEx.writeFileSync(__dirname+'/data/e.txt', 'master 1'+"\n");
+
+		gitParser.git(['status'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.currentBranchName, 'master');
+			assert.strictEqual(result.notStaged.untracked.length, 1);
+			assert.strictEqual(result.notStaged.modified.length, 1);
+			assert.strictEqual(result.notStaged.deleted.length, 1);
+			assert.strictEqual(result.staged.untracked.length, 0);
 
 			done();
 

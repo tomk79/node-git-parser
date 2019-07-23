@@ -8,12 +8,12 @@ module.exports = function(result, callback){
         callback(result);
         return;
     }
-	result.addedFiles = [];
+	result.added = [];
 
 	lines.forEach(function(line){
 
         if( line.match(/^add\ \'([\s\S]*)\'$/g) ){
-            result.addedFiles.push( RegExp.$1 );
+            result.added.push( RegExp.$1 );
         }
 	});
 
