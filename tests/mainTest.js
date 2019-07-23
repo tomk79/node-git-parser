@@ -39,6 +39,11 @@ describe('git操作', function() {
 	it("git init", function(done) {
 		this.timeout(60*1000);
 
+		fsEx.writeFileSync(__dirname+'/data/a.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/b.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/c.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/d.txt', 'master 1'+"\n");
+
 		gitParser.git(['init'], function(result){
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
@@ -57,7 +62,7 @@ describe('git操作', function() {
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
-			assert.strictEqual(result.untrackedFiles.length, 1);
+			assert.strictEqual(result.untrackedFiles.length, 5);
 
 			done();
 
@@ -71,6 +76,7 @@ describe('git操作', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.addedFiles.length, 5);
 
 			done();
 
@@ -86,7 +92,57 @@ describe('git操作', function() {
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.untrackedFiles.length, 0);
-			assert.strictEqual(result.newFiles.length, 1);
+			assert.strictEqual(result.newFiles.length, 5);
+
+			done();
+
+		});
+	});
+
+	it("git commit", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['commit', '-m', 'Initial Commit'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+
+			done();
+
+		});
+	});
+
+	it("git status", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['status'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.currentBranchName, 'master');
+			assert.strictEqual(result.untrackedFiles.length, 0);
+			assert.strictEqual(result.newFiles.length, 0);
+
+			done();
+
+		});
+	});
+
+});
+
+describe('Errors', function() {
+
+	it("git foobar", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['foobar'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 1);
+			assert.strictEqual(result.errors.length, 1);
 
 			done();
 
@@ -97,7 +153,7 @@ describe('git操作', function() {
 
 describe('Cleaning', function() {
 
-	it("Clearning .git", function(done) {
+	it("Clearning data directory", function(done) {
 		this.timeout(60*1000);
 		fsEx.removeSync(__dirname+'/data/');
 		fsEx.mkdirSync(__dirname+'/data/');
