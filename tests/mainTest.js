@@ -204,37 +204,70 @@ describe('git基本操作', function() {
 
 });
 
-describe('Errors', function() {
+describe('git branch 操作', function() {
 
-	it("git foobar", function(done) {
+	it("git branch -a", function(done) {
 		this.timeout(60*1000);
 
-		gitParser.git(['foobar'], function(result){
+		gitParser.git(['branch', '-a'], function(result){
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
-			assert.strictEqual(result.code, 1);
-			assert.strictEqual(result.errors.length, 1);
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.branches.length, 1);
+			assert.strictEqual(result.branches[0], 'master');
+			assert.strictEqual(result.currentBranchName, 'master');
 
 			done();
 
 		});
 	});
 
-});
-
-describe('git branch 操作', function() {
-
-	it("git branch", function(done) {
+	it("git checkout -b test_branch_name_001", function(done) {
 		this.timeout(60*1000);
 
-		gitParser.git(['branch'], function(result){
-			console.log(result);
+		gitParser.git(['checkout', '-b', 'test_branch_name_001'], function(result){
+			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
-			assert.strictEqual(result.branches.length, 1);
+			assert.strictEqual(result.result, true);
+			assert.strictEqual(result.created, true);
+			assert.strictEqual(result.currentBranchName, 'test_branch_name_001');
+
+			done();
+
+		});
+	});
+
+	it("git branch -a", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['branch', '-a'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.branches.length, 2);
 			assert.strictEqual(result.branches[0], 'master');
+			assert.strictEqual(result.branches[1], 'test_branch_name_001');
+			assert.strictEqual(result.currentBranchName, 'test_branch_name_001');
+
+			done();
+
+		});
+	});
+
+	it("git checkout master", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['checkout', 'master'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.result, true);
+			assert.strictEqual(result.created, false);
 			assert.strictEqual(result.currentBranchName, 'master');
 
 			done();
