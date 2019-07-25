@@ -37,6 +37,8 @@ module.exports = function(fncCallGit){
 			case 'status':
 			case 'add':
 			case 'commit':
+			case 'branch':
+			case 'checkout':
 				_this[cmdAry[0]](rtn, function(result){
 					callback(result);
 				});
@@ -52,8 +54,10 @@ module.exports.prototype.init = require('./parsers/init.js');
 module.exports.prototype.status = require('./parsers/status.js');
 module.exports.prototype.add = require('./parsers/add.js');
 module.exports.prototype.commit = require('./parsers/commit.js');
+module.exports.prototype.branch = require('./parsers/branch.js');
+module.exports.prototype.checkout = require('./parsers/checkout.js');
 
-},{"./parsers/add.js":2,"./parsers/commit.js":3,"./parsers/init.js":4,"./parsers/status.js":5}],2:[function(require,module,exports){
+},{"./parsers/add.js":2,"./parsers/branch.js":3,"./parsers/checkout.js":4,"./parsers/commit.js":5,"./parsers/init.js":6,"./parsers/status.js":7}],2:[function(require,module,exports){
 /**
  * git add
  */
@@ -82,6 +86,43 @@ module.exports = function(result, callback){
 
 },{}],3:[function(require,module,exports){
 /**
+ * git branch
+ */
+module.exports = function(result, callback){
+	callback = callback || function(){}
+	var lines = result.stdout.split(/\r\n|\r|\n/g);
+	result.branches = [];
+
+	lines.forEach(function(line){
+		if( !line.length ){
+			return;
+		}
+
+		if( line.match(/^(\*?)[\s]*([\S]*)$/g) ){
+			var branchName = RegExp.$2;
+			result.branches.push(branchName);
+			if( RegExp.$1 ){
+				result.currentBranchName = branchName;
+			}
+		}
+
+	});
+
+	callback(result);
+}
+
+},{}],4:[function(require,module,exports){
+/**
+ * git checkout
+ */
+module.exports = function(result, callback){
+	callback = callback || function(){}
+    // TODO: 解析処理を書く
+	callback(result);
+}
+
+},{}],5:[function(require,module,exports){
+/**
  * git commit
  */
 module.exports = function(result, callback){
@@ -90,7 +131,7 @@ module.exports = function(result, callback){
 	callback(result);
 }
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * git init
  */
@@ -100,7 +141,7 @@ module.exports = function(result, callback){
 	callback(result);
 }
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
  * git status
  */
@@ -205,7 +246,7 @@ module.exports = function(result, callback){
 	callback(result);
 }
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 window.GitParser = require('../libs/main.js');
 
-},{"../libs/main.js":1}]},{},[6])
+},{"../libs/main.js":1}]},{},[8])

@@ -34,15 +34,10 @@ describe('インスタンス初期化', function() {
 	});
 });
 
-describe('git操作', function() {
+describe('git初期化', function() {
 
 	it("git init", function(done) {
 		this.timeout(60*1000);
-
-		fsEx.writeFileSync(__dirname+'/data/a.txt', 'master 1'+"\n");
-		fsEx.writeFileSync(__dirname+'/data/b.txt', 'master 1'+"\n");
-		fsEx.writeFileSync(__dirname+'/data/c.txt', 'master 1'+"\n");
-		fsEx.writeFileSync(__dirname+'/data/d.txt', 'master 1'+"\n");
 
 		gitParser.git(['init'], function(result){
 			// console.log(result);
@@ -53,9 +48,17 @@ describe('git操作', function() {
 
 		});
 	});
+});
+
+describe('git基本操作', function() {
 
 	it("git status", function(done) {
 		this.timeout(60*1000);
+
+		fsEx.writeFileSync(__dirname+'/data/a.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/b.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/c.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/d.txt', 'master 1'+"\n");
 
 		gitParser.git(['status'], function(result){
 			// console.log(result);
@@ -193,6 +196,46 @@ describe('git操作', function() {
 			assert.strictEqual(result.currentBranchName, 'master');
 			assert.strictEqual(result.notStaged.untracked.length, 0);
 			assert.strictEqual(result.staged.untracked.length, 0);
+
+			done();
+
+		});
+	});
+
+});
+
+describe('Errors', function() {
+
+	it("git foobar", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['foobar'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 1);
+			assert.strictEqual(result.errors.length, 1);
+
+			done();
+
+		});
+	});
+
+});
+
+describe('git branch 操作', function() {
+
+	it("git branch", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['branch'], function(result){
+			console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.branches.length, 1);
+			assert.strictEqual(result.branches[0], 'master');
+			assert.strictEqual(result.currentBranchName, 'master');
 
 			done();
 
