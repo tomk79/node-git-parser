@@ -1,4 +1,4 @@
-# node-git-parser
+# gitparse79
 gitコマンドの出力を解析して構造化します。
 
 
@@ -7,8 +7,8 @@ gitコマンドの出力を解析して構造化します。
 ### Node.js
 
 ```js
-var GitParser = require('git-parser'),
-    gitParser = new GitParser(function(cmdAry, callback){
+var GitParse79 = require('gitparse79'),
+    gitParse79 = new GitParse79(function(cmdAry, callback){
         var stdout = '';
         var _pathCurrentDir = process.cwd();
         process.chdir( '/path/to/git_repository/' ); // git実行時のカレントディレクトリはここで指定
@@ -27,7 +27,7 @@ var GitParser = require('git-parser'),
         process.chdir( _pathCurrentDir ); // カレントディレクトリを戻す
         return;
     });
-    gitParser.git(['status'], function(result){
+    gitParse79.git(['status'], function(result){
         console.log(result);
     });
 
@@ -36,9 +36,9 @@ var GitParser = require('git-parser'),
 ### Browser
 
 ```html
-<script src="/path/to/git-parser/dist/gitParser.min.js"></script>
+<script src="/path/to/gitparse79/dist/gitParse79.min.js"></script>
 <script>
-var gitParser = new GitParser(function(cmdAry, callback){
+var gitParse79 = new GitParse79(function(cmdAry, callback){
     // サーバーでgitコマンドを実行するAPIを用意してください。
     // callback には、 gitコマンドが出力した文字列を返してください。
     var stdout = '';
@@ -57,7 +57,7 @@ var gitParser = new GitParser(function(cmdAry, callback){
     });
     return;
 });
-gitParser.git(['status'], function(result){
+gitParse79.git(['status'], function(result){
     console.log(result);
 });
 </script>
@@ -65,7 +65,7 @@ gitParser.git(['status'], function(result){
 
 ## 更新履歴 - Change log
 
-### git-parser v0.1.0 (リリース日未定)
+### gitparse79 v0.1.0 (リリース日未定)
 
 - Initial Release.
 

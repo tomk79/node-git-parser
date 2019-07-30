@@ -11,12 +11,12 @@ var _tasks = [
 
 // JavaScript を処理
 gulp.task("js", function() {
-	gulp.src(["src/gitParser.js"])
+	gulp.src(["src/gitParse79.js"])
 		.pipe(plumber())
 		.pipe(browserify({}))
-		.pipe(concat('gitParser.js'))
+		.pipe(concat('gitParse79.js'))
 		.pipe(gulp.dest( './dist/' ))
-		.pipe(concat('gitParser.min.js'))
+		.pipe(concat('gitParse79.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest( './dist/' ))
 	;
