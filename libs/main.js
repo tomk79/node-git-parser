@@ -38,6 +38,7 @@ module.exports = function(fncCallGit){
 			case 'commit':
 			case 'branch':
 			case 'checkout':
+			case 'log':
 				_this[cmdAry[0]](rtn, function(result){
 					callback(result);
 				});
@@ -55,3 +56,4 @@ module.exports.prototype.add = require('./parsers/add.js');
 module.exports.prototype.commit = require('./parsers/commit.js');
 module.exports.prototype.branch = require('./parsers/branch.js');
 module.exports.prototype.checkout = require('./parsers/checkout.js');
+module.exports.prototype.log = require('./parsers/log.js');

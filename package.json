@@ -2,7 +2,7 @@
   "name": "gitparse79",
   "version": "0.1.1-alpha.1+dev",
   "description": "gitコマンドの出力を解析して構造化します。",
-  "private": false,
+  "private": true,
   "main": "libs/main.js",
   "scripts": {
     "start": "gulp watch",

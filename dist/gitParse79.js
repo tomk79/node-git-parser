@@ -39,6 +39,7 @@ module.exports = function(fncCallGit){
 			case 'commit':
 			case 'branch':
 			case 'checkout':
+			case 'log':
 				_this[cmdAry[0]](rtn, function(result){
 					callback(result);
 				});
@@ -56,8 +57,9 @@ module.exports.prototype.add = require('./parsers/add.js');
 module.exports.prototype.commit = require('./parsers/commit.js');
 module.exports.prototype.branch = require('./parsers/branch.js');
 module.exports.prototype.checkout = require('./parsers/checkout.js');
+module.exports.prototype.log = require('./parsers/log.js');
 
-},{"./parsers/add.js":2,"./parsers/branch.js":3,"./parsers/checkout.js":4,"./parsers/commit.js":5,"./parsers/init.js":6,"./parsers/status.js":7}],2:[function(require,module,exports){
+},{"./parsers/add.js":2,"./parsers/branch.js":3,"./parsers/checkout.js":4,"./parsers/commit.js":5,"./parsers/init.js":6,"./parsers/log.js":7,"./parsers/status.js":8}],2:[function(require,module,exports){
 /**
  * git add
  */
@@ -162,6 +164,57 @@ module.exports = function(result, callback){
 
 },{}],7:[function(require,module,exports){
 /**
+ * git log
+ */
+module.exports = function(result, callback){
+	callback = callback || function(){}
+	var lines = result.stdout.split(/\r\n|\r|\n/g);
+	var phase = null;
+    result.logs = [];
+    var tmpLog;
+	// console.log(lines);
+
+	lines.forEach(function(line){
+
+		// --------------------------------------
+		// Untracked files
+		if( line.match(/^commit\ ([0-9a-fA-F]+)$/) ){
+            tmpLog = {};
+            tmpLog.commit = RegExp.$1;
+			phase = 'log_header';
+			return;
+		}else if(phase == 'log_header'){
+			if( !line.length ){
+    			phase = 'log_commit_message';
+                tmpLog.message = '';
+				return;
+			}
+			if( line.match(/^Author\:\s+([\s\S]+?)\s+\<([\S]+?)\>$/g) ){
+				tmpLog.author = RegExp.$1;
+				tmpLog.email = RegExp.$2;
+				return;
+			}
+		}else if(phase == 'log_commit_message'){
+			if( !line.length ){
+				phase = null;
+                result.logs.push(tmpLog);
+                tmpLog = {};
+				return;
+			}
+			if( line.match(/^\s{4}([\s\S]*?)$/g) ){
+				tmpLog.message += RegExp.$1 + "\n";
+				return;
+			}
+		}
+
+	});
+
+	// console.log(result);
+	callback(result);
+}
+
+},{}],8:[function(require,module,exports){
+/**
  * git status
  */
 module.exports = function(result, callback){
@@ -265,7 +318,7 @@ module.exports = function(result, callback){
 	callback(result);
 }
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 window.GitParser = require('../libs/main.js');
 
-},{"../libs/main.js":1}]},{},[8])
+},{"../libs/main.js":1}]},{},[9])

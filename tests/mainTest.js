@@ -277,6 +277,27 @@ describe('git branch 操作', function() {
 
 });
 
+describe('git log 操作', function() {
+
+	it("git log", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.logs.length, 2);
+			// assert.strictEqual(result.logs[0].author, 'Tomoya Koyanagi');
+			// assert.strictEqual(result.logs[0].email, 'tomk79@gmail.com');
+
+			done();
+
+		});
+	});
+
+});
+
 describe('Errors', function() {
 
 	it("git foobar", function(done) {
