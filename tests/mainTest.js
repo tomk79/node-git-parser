@@ -48,6 +48,47 @@ describe('git初期化', function() {
 
 		});
 	});
+
+	it("git config user.name \"Tester Tester\"", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['config', 'user.name', 'Tester Tester'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+
+			// 検算
+			gitParser.git(['config', 'user.name'], function(result){
+				// console.log(result);
+				assert.equal(typeof(result), typeof({}));
+				assert.equal(typeof(result.stdout), typeof(''));
+				assert.strictEqual(result.name, 'Tester Tester');
+				done();
+			});
+
+		});
+	});
+
+	it("git config user.email \"tester@example.com\"", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['config', 'user.email', 'tester@example.com'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+
+			// 検算
+			gitParser.git(['config', 'user.email'], function(result){
+				// console.log(result);
+				assert.equal(typeof(result), typeof({}));
+				assert.equal(typeof(result.stdout), typeof(''));
+				assert.strictEqual(result.email, 'tester@example.com');
+				done();
+			});
+
+		});
+	});
+
 });
 
 describe('git基本操作', function() {
@@ -288,8 +329,8 @@ describe('git log 操作', function() {
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.logs.length, 2);
-			// assert.strictEqual(result.logs[0].author, 'Tomoya Koyanagi');
-			// assert.strictEqual(result.logs[0].email, 'tomk79@gmail.com');
+			assert.strictEqual(result.logs[0].author, 'Tester Tester');
+			assert.strictEqual(result.logs[0].email, 'tester@example.com');
 
 			done();
 

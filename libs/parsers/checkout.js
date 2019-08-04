@@ -1,7 +1,7 @@
 /**
  * git checkout
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	result.result = false;

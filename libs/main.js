@@ -33,13 +33,14 @@ module.exports = function(fncCallGit){
 
 		switch( cmdAry[0] ){
 			case 'init':
+			case 'config':
 			case 'status':
 			case 'add':
 			case 'commit':
 			case 'branch':
 			case 'checkout':
 			case 'log':
-				_this[cmdAry[0]](rtn, function(result){
+				_this[cmdAry[0]](cmdAry, rtn, function(result){
 					callback(result);
 				});
 				break;
@@ -51,6 +52,7 @@ module.exports = function(fncCallGit){
 	}
 }
 module.exports.prototype.init = require('./parsers/init.js');
+module.exports.prototype.config = require('./parsers/config.js');
 module.exports.prototype.status = require('./parsers/status.js');
 module.exports.prototype.add = require('./parsers/add.js');
 module.exports.prototype.commit = require('./parsers/commit.js');

@@ -34,13 +34,14 @@ module.exports = function(fncCallGit){
 
 		switch( cmdAry[0] ){
 			case 'init':
+			case 'config':
 			case 'status':
 			case 'add':
 			case 'commit':
 			case 'branch':
 			case 'checkout':
 			case 'log':
-				_this[cmdAry[0]](rtn, function(result){
+				_this[cmdAry[0]](cmdAry, rtn, function(result){
 					callback(result);
 				});
 				break;
@@ -52,6 +53,7 @@ module.exports = function(fncCallGit){
 	}
 }
 module.exports.prototype.init = require('./parsers/init.js');
+module.exports.prototype.config = require('./parsers/config.js');
 module.exports.prototype.status = require('./parsers/status.js');
 module.exports.prototype.add = require('./parsers/add.js');
 module.exports.prototype.commit = require('./parsers/commit.js');
@@ -59,11 +61,11 @@ module.exports.prototype.branch = require('./parsers/branch.js');
 module.exports.prototype.checkout = require('./parsers/checkout.js');
 module.exports.prototype.log = require('./parsers/log.js');
 
-},{"./parsers/add.js":2,"./parsers/branch.js":3,"./parsers/checkout.js":4,"./parsers/commit.js":5,"./parsers/init.js":6,"./parsers/log.js":7,"./parsers/status.js":8}],2:[function(require,module,exports){
+},{"./parsers/add.js":2,"./parsers/branch.js":3,"./parsers/checkout.js":4,"./parsers/commit.js":5,"./parsers/config.js":6,"./parsers/init.js":7,"./parsers/log.js":8,"./parsers/status.js":9}],2:[function(require,module,exports){
 /**
  * git add
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	if( !result.stdout.length ){
@@ -90,7 +92,7 @@ module.exports = function(result, callback){
 /**
  * git branch
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	result.branches = [];
@@ -117,7 +119,7 @@ module.exports = function(result, callback){
 /**
  * git checkout
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	result.result = false;
@@ -146,7 +148,7 @@ module.exports = function(result, callback){
 /**
  * git commit
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
     // TODO: 解析処理を書く
 	callback(result);
@@ -154,19 +156,68 @@ module.exports = function(result, callback){
 
 },{}],6:[function(require,module,exports){
 /**
- * git init
+ * git config
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
-    // TODO: 解析処理を書く
+	var lines = result.stdout.split(/\r\n|\r|\n/g);
+	var phase = null;
+	// console.log(lines);
+	var mode = null;
+
+	var parsedCmd = (function(cmdAry){
+		var rtn = {
+			"options": {},
+			"args": []
+		};
+		cmdAry.forEach(function(cmdLine, idx){
+			if( !idx ){return;}
+			// console.log(cmdLine, idx);
+			if( cmdLine.match(/^\-\-?([a-zA-Z]+?)$/) ){
+				rtn.options[RegExp.$1] = true;
+				return;
+			}
+			rtn.args.push(cmdLine);
+		});
+		return rtn;
+	})(cmdAry);
+	// console.log(parsedCmd);
+
+	result.property = parsedCmd.args[0];
+	if( parsedCmd.args.length == 1 ){
+		mode = 'get';
+	}else{
+		mode = 'set';
+	}
+
+	if( mode == 'get' ){
+		switch( result.property ){
+			case 'user.name':
+				result.name = lines[0];break;
+			case 'user.email':
+				result.email = lines[0];break;
+		}
+	}
+
+	// console.log(result);
 	callback(result);
 }
 
 },{}],7:[function(require,module,exports){
 /**
+ * git init
+ */
+module.exports = function(cmdAry, result, callback){
+	callback = callback || function(){}
+    // TODO: 解析処理を書く
+	callback(result);
+}
+
+},{}],8:[function(require,module,exports){
+/**
  * git log
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	var phase = null;
@@ -213,11 +264,11 @@ module.exports = function(result, callback){
 	callback(result);
 }
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
  * git status
  */
-module.exports = function(result, callback){
+module.exports = function(cmdAry, result, callback){
 	callback = callback || function(){}
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	var phase = null;
@@ -318,7 +369,7 @@ module.exports = function(result, callback){
 	callback(result);
 }
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 window.GitParser = require('../libs/main.js');
 
-},{"../libs/main.js":1}]},{},[9])
+},{"../libs/main.js":1}]},{},[10])
