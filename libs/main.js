@@ -51,6 +51,7 @@ module.exports = function(fncCallGit){
 		return;
 	}
 }
+
 module.exports.prototype.init = require('./parsers/init.js');
 module.exports.prototype.config = require('./parsers/config.js');
 module.exports.prototype.status = require('./parsers/status.js');
@@ -59,3 +60,23 @@ module.exports.prototype.commit = require('./parsers/commit.js');
 module.exports.prototype.branch = require('./parsers/branch.js');
 module.exports.prototype.checkout = require('./parsers/checkout.js');
 module.exports.prototype.log = require('./parsers/log.js');
+
+/**
+ * コマンド配列を解析する
+ */
+module.exports.prototype.parseCmdAry = function(cmdAry){
+	var rtn = {
+		"options": {},
+		"args": []
+	};
+	cmdAry.forEach(function(cmdLine, idx){
+		if( !idx ){return;}
+		// console.log(cmdLine, idx);
+		if( cmdLine.match(/^\-\-?([a-zA-Z]+?)$/) ){
+			rtn.options[RegExp.$1] = true;
+			return;
+		}
+		rtn.args.push(cmdLine);
+	});
+	return rtn;
+}

@@ -8,22 +8,7 @@ module.exports = function(cmdAry, result, callback){
 	// console.log(lines);
 	var mode = null;
 
-	var parsedCmd = (function(cmdAry){
-		var rtn = {
-			"options": {},
-			"args": []
-		};
-		cmdAry.forEach(function(cmdLine, idx){
-			if( !idx ){return;}
-			// console.log(cmdLine, idx);
-			if( cmdLine.match(/^\-\-?([a-zA-Z]+?)$/) ){
-				rtn.options[RegExp.$1] = true;
-				return;
-			}
-			rtn.args.push(cmdLine);
-		});
-		return rtn;
-	})(cmdAry);
+	var parsedCmd = this.parseCmdAry(cmdAry);
 	// console.log(parsedCmd);
 
 	result.property = parsedCmd.args[0];
