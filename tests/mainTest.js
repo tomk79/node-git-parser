@@ -34,6 +34,23 @@ describe('インスタンス初期化', function() {
 	});
 });
 
+describe('Utils: parseCmdAry()', function() {
+	it("parseCmdAry()", function(done) {
+		this.timeout(60*1000);
+
+		var parsedArgs = gitParser.parseCmdAry(['log', '--pretty=oneline', '-p', 'arg1', 'arg2']);
+		// console.log(parsedArgs);
+		assert.equal(typeof(parsedArgs), typeof({}));
+		assert.strictEqual(parsedArgs.options.pretty, 'oneline');
+		assert.strictEqual(parsedArgs.options.p, true);
+		assert.equal(parsedArgs.args.length, 2);
+		assert.strictEqual(parsedArgs.args[0], 'arg1');
+		assert.strictEqual(parsedArgs.args[1], 'arg2');
+
+		done();
+	});
+});
+
 describe('git初期化', function() {
 
 	it("git init", function(done) {
@@ -336,6 +353,51 @@ describe('git log 操作', function() {
 
 		});
 	});
+
+	it("git log -p", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log', '-p'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.logs.length, 2);
+			assert.strictEqual(result.logs[0].author, 'Tester Tester');
+			assert.strictEqual(result.logs[0].email, 'tester@example.com');
+
+			done();
+
+		});
+	});
+
+	it("git log --pretty=oneline", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log', '--pretty=oneline'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			// assert.strictEqual(result.logs.length, 2);
+			// assert.strictEqual(result.logs[0].author, 'Tester Tester');
+			// assert.strictEqual(result.logs[0].email, 'tester@example.com');
+
+			done();
+
+		});
+	});
+
+/*
+メモ:
+git log -p --word-diff
+git log --stat
+git log --pretty=oneline
+git log --pretty=short
+git log --pretty=full
+git log --pretty=fuller
+git log --pretty=format:"%h - %an, %ar : %s"
+*/
 
 });
 

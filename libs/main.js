@@ -72,8 +72,13 @@ module.exports.prototype.parseCmdAry = function(cmdAry){
 	cmdAry.forEach(function(cmdLine, idx){
 		if( !idx ){return;}
 		// console.log(cmdLine, idx);
-		if( cmdLine.match(/^\-\-?([a-zA-Z]+?)$/) ){
-			rtn.options[RegExp.$1] = true;
+		if( cmdLine.match(/^\-\-?([a-zA-Z\-/.]+?)(?:\=([a-zA-Z\-/.]+))?$/) ){
+			var key = RegExp.$1;
+			var val = RegExp.$2;
+			rtn.options[key] = true;
+			if( val ){
+				rtn.options[key] = val;
+			}
 			return;
 		}
 		rtn.args.push(cmdLine);

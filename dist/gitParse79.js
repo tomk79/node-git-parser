@@ -73,8 +73,13 @@ module.exports.prototype.parseCmdAry = function(cmdAry){
 	cmdAry.forEach(function(cmdLine, idx){
 		if( !idx ){return;}
 		// console.log(cmdLine, idx);
-		if( cmdLine.match(/^\-\-?([a-zA-Z]+?)$/) ){
-			rtn.options[RegExp.$1] = true;
+		if( cmdLine.match(/^\-\-?([a-zA-Z\-/.]+?)(?:\=([a-zA-Z\-/.]+))?$/) ){
+			var key = RegExp.$1;
+			var val = RegExp.$2;
+			rtn.options[key] = true;
+			if( val ){
+				rtn.options[key] = val;
+			}
 			return;
 		}
 		rtn.args.push(cmdLine);
@@ -228,8 +233,11 @@ module.exports = function(cmdAry, result, callback){
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	var phase = null;
     result.logs = [];
-    var tmpLog;
+    var tmpLog, files;
 	// console.log(lines);
+
+	var parsedCmd = this.parseCmdAry(cmdAry);
+	// console.log(parsedCmd);
 
 	lines.forEach(function(line){
 
@@ -251,8 +259,15 @@ module.exports = function(cmdAry, result, callback){
 				tmpLog.email = RegExp.$2;
 				return;
 			}
+			return;
+
 		}else if(phase == 'log_commit_message'){
 			if( !line.length ){
+				if( parsedCmd.options.p ){
+					phase = 'log_commit_files';
+					files = [];
+					return;
+				}
 				phase = null;
                 result.logs.push(tmpLog);
                 tmpLog = {};
@@ -262,12 +277,33 @@ module.exports = function(cmdAry, result, callback){
 				tmpLog.message += RegExp.$1 + "\n";
 				return;
 			}
+		}else if(phase == 'log_commit_files'){
+			if( !line.length ){
+				phase = null;
+				tmpLog.files = parseLogFiles(files);
+                result.logs.push(tmpLog);
+                tmpLog = {};
+				return;
+			}
+			files.push(line);
+			return;
 		}
 
 	});
 
 	// console.log(result);
 	callback(result);
+}
+
+/**
+ * ファイルのdiff部分を解析
+ */
+function parseLogFiles(lines){
+	var rtn = [];
+	lines.forEach(function(line){
+		rtn.push(line);
+	});
+	return rtn;
 }
 
 },{}],9:[function(require,module,exports){
