@@ -359,12 +359,50 @@ describe('git log 操作', function() {
 
 		gitParser.git(['log', '-p'], function(result){
 			// console.log(result);
+			result.logs.forEach(function(line){
+				console.log(line);
+			});
+
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.logs.length, 2);
 			assert.strictEqual(result.logs[0].author, 'Tester Tester');
 			assert.strictEqual(result.logs[0].email, 'tester@example.com');
+
+			done();
+
+		});
+	});
+
+	it("git log -p --word-diff", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log', '-p', '--word-diff'], function(result){
+			// console.log(result.logs);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.logs.length, 2);
+			assert.strictEqual(result.logs[0].author, 'Tester Tester');
+			assert.strictEqual(result.logs[0].email, 'tester@example.com');
+
+			done();
+
+		});
+	});
+
+	it("git log --stat", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log', '--stat'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			// assert.strictEqual(result.logs.length, 2);
+			// assert.strictEqual(result.logs[0].author, 'Tester Tester');
+			// assert.strictEqual(result.logs[0].email, 'tester@example.com');
 
 			done();
 
