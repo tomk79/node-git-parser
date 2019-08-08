@@ -68,6 +68,7 @@ gitParse79.git(['status'], function(result){
 ### gitparse79 v0.1.1 (リリース日未定)
 
 - `git log` の解析を追加。
+- `git show` の解析を追加。
 - `git config` の解析を追加。
 
 ### gitparse79 v0.1.0 (2019年7月30日)

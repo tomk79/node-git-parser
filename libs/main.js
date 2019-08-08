@@ -40,6 +40,7 @@ module.exports = function(fncCallGit){
 			case 'branch':
 			case 'checkout':
 			case 'log':
+			case 'show':
 				_this[cmdAry[0]](cmdAry, rtn, function(result){
 					callback(result);
 				});
@@ -60,6 +61,7 @@ module.exports.prototype.commit = require('./parsers/commit.js');
 module.exports.prototype.branch = require('./parsers/branch.js');
 module.exports.prototype.checkout = require('./parsers/checkout.js');
 module.exports.prototype.log = require('./parsers/log.js');
+module.exports.prototype.show = require('./parsers/show.js');
 
 /**
  * コマンド配列を解析する

@@ -497,6 +497,48 @@ describe('git log 操作', function() {
 
 });
 
+describe('git show 操作', function() {
+
+	it("git show", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result.logs[0].commit), typeof(''));
+
+			var commit = result.logs[0].commit;
+			gitParser.git(['show', commit], function(result){
+				// console.log(result);
+				assert.equal(typeof(result), typeof({}));
+				assert.equal(typeof(result.stdout), typeof(''));
+				assert.strictEqual(result.code, 0);
+
+				assert.equal(typeof(result.commit), typeof(''));
+				assert.ok(result.commit.length > 0);
+				assert.strictEqual(result.author, 'Tester Tester');
+				assert.strictEqual(result.email, 'tester@example.com');
+				assert.equal(typeof(result.date), typeof(''));
+				assert.ok(result.date.length > 0);
+
+				// console.log(result.files);
+				assert.strictEqual(result.files.length, 4);
+
+				assert.strictEqual(result.files[0].filenameBefore, 'a.txt');
+				assert.strictEqual(result.files[0].filename, 'a.txt');
+				assert.strictEqual(result.files[0].type, 'changed');
+				assert.strictEqual(result.files[0].isRenamed, false);
+				assert.strictEqual(result.files[0].similarity, false);
+				assert.strictEqual(result.files[0].index.from, '35a087c');
+				assert.strictEqual(result.files[0].index.to, '08bda82');
+				assert.strictEqual(result.files[0].mode, '100644');
+
+				done();
+			});
+
+		});
+	});
+});
+
 describe('Errors', function() {
 
 	it("git foobar", function(done) {
