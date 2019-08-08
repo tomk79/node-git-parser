@@ -135,11 +135,6 @@ function parseLogFiles(lines){
 				}
 				return;
 			}
-			// if( line.match(/^Date\:\s+([\s\S]+?)$/g) ){
-			// 	tmpLog.date = RegExp.$1;
-			// 	return;
-			// }
-			// tmpFileDiff.diff.push(line);
 		}
 	});
 	if( tmpFileDiff.filename ){
