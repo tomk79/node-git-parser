@@ -113,17 +113,19 @@ describe('git基本操作', function() {
 	it("git status", function(done) {
 		this.timeout(60*1000);
 
+		// new files
 		fsEx.writeFileSync(__dirname+'/data/a.txt', 'master 1'+"\n");
-		fsEx.writeFileSync(__dirname+'/data/b.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/b.txt', 'master 1'+"\n"+'moved b.txt to e.txt'+"\n");
 		fsEx.writeFileSync(__dirname+'/data/c.txt', 'master 1'+"\n");
 		fsEx.writeFileSync(__dirname+'/data/d.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/new_and_remove.txt', 'test for AddNew and Remove.'+"\n");
 
 		gitParser.git(['status'], function(result){
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
-			assert.strictEqual(result.notStaged.untracked.length, 5);
+			assert.strictEqual(result.notStaged.untracked.length, 6);
 
 			done();
 
@@ -137,7 +139,7 @@ describe('git基本操作', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
-			assert.strictEqual(result.added.length, 5);
+			assert.strictEqual(result.added.length, 6);
 
 			done();
 
@@ -153,7 +155,7 @@ describe('git基本操作', function() {
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.notStaged.untracked.length, 0);
-			assert.strictEqual(result.staged.untracked.length, 5);
+			assert.strictEqual(result.staged.untracked.length, 6);
 
 			done();
 
@@ -194,9 +196,18 @@ describe('git基本操作', function() {
 	it("change file", function(done) {
 		this.timeout(60*1000);
 
+		// new
+		fsEx.writeFileSync(__dirname+'/data/new.txt', 'master 2'+"\n");
+
+		// change
 		fsEx.writeFileSync(__dirname+'/data/a.txt', 'master 2'+"\n");
+
+		// move
 		fsEx.removeSync(__dirname+'/data/b.txt');
-		fsEx.writeFileSync(__dirname+'/data/e.txt', 'master 1'+"\n");
+		fsEx.writeFileSync(__dirname+'/data/e.txt', 'master 2'+"\n"+'moved b.txt to e.txt'+"\n");
+
+		// remove
+		fsEx.removeSync(__dirname+'/data/new_and_remove.txt');
 
 		gitParser.git(['status'], function(result){
 			// console.log(result);
@@ -204,9 +215,9 @@ describe('git基本操作', function() {
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.currentBranchName, 'master');
-			assert.strictEqual(result.notStaged.untracked.length, 1);
+			assert.strictEqual(result.notStaged.untracked.length, 2);
 			assert.strictEqual(result.notStaged.modified.length, 1);
-			assert.strictEqual(result.notStaged.deleted.length, 1);
+			assert.strictEqual(result.notStaged.deleted.length, 2);
 			assert.strictEqual(result.staged.untracked.length, 0);
 
 			done();
@@ -221,8 +232,8 @@ describe('git基本操作', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
-			assert.strictEqual(result.added.length, 2);
-			assert.strictEqual(result.removed.length, 1);
+			assert.strictEqual(result.added.length, 3);
+			assert.strictEqual(result.removed.length, 2);
 
 			done();
 
@@ -346,8 +357,12 @@ describe('git log 操作', function() {
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.logs.length, 2);
+			assert.equal(typeof(result.logs[0].commit), typeof(''));
+			assert.ok(result.logs[0].commit.length > 0);
 			assert.strictEqual(result.logs[0].author, 'Tester Tester');
 			assert.strictEqual(result.logs[0].email, 'tester@example.com');
+			assert.equal(typeof(result.logs[0].date), typeof(''));
+			assert.ok(result.logs[0].date.length > 0);
 
 			done();
 
@@ -359,16 +374,59 @@ describe('git log 操作', function() {
 
 		gitParser.git(['log', '-p'], function(result){
 			// console.log(result);
-			result.logs.forEach(function(line){
-				console.log(line);
-			});
+			// result.logs.forEach(function(line){
+			// 	console.log(line);
+			// });
 
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.logs.length, 2);
+			assert.equal(typeof(result.logs[0].commit), typeof(''));
+			assert.ok(result.logs[0].commit.length > 0);
 			assert.strictEqual(result.logs[0].author, 'Tester Tester');
 			assert.strictEqual(result.logs[0].email, 'tester@example.com');
+			assert.equal(typeof(result.logs[0].date), typeof(''));
+			assert.ok(result.logs[0].date.length > 0);
+
+			// console.log(result.logs[0].files);
+			assert.strictEqual(result.logs[0].files.length, 4);
+
+			assert.strictEqual(result.logs[0].files[0].filenameBefore, 'a.txt');
+			assert.strictEqual(result.logs[0].files[0].filename, 'a.txt');
+			assert.strictEqual(result.logs[0].files[0].type, 'changed');
+			assert.strictEqual(result.logs[0].files[0].isRenamed, false);
+			assert.strictEqual(result.logs[0].files[0].similarity, false);
+			assert.strictEqual(result.logs[0].files[0].index.from, '35a087c');
+			assert.strictEqual(result.logs[0].files[0].index.to, '08bda82');
+			assert.strictEqual(result.logs[0].files[0].mode, '100644');
+
+			assert.strictEqual(result.logs[0].files[1].filenameBefore, 'b.txt');
+			assert.strictEqual(result.logs[0].files[1].filename, 'e.txt');
+			assert.strictEqual(result.logs[0].files[1].type, 'changed');
+			assert.strictEqual(result.logs[0].files[1].isRenamed, true);
+			assert.strictEqual(result.logs[0].files[1].similarity, '70%');
+			assert.strictEqual(result.logs[0].files[1].index.from, '4cc9312');
+			assert.strictEqual(result.logs[0].files[1].index.to, '3faea0b');
+			assert.strictEqual(result.logs[0].files[1].mode, '100644');
+
+			assert.strictEqual(result.logs[0].files[2].filenameBefore, 'new.txt');
+			assert.strictEqual(result.logs[0].files[2].filename, 'new.txt');
+			assert.strictEqual(result.logs[0].files[2].type, 'added');
+			assert.strictEqual(result.logs[0].files[2].isRenamed, false);
+			assert.strictEqual(result.logs[0].files[2].similarity, false);
+			assert.strictEqual(result.logs[0].files[2].index.from, '0000000');
+			assert.strictEqual(result.logs[0].files[2].index.to, '08bda82');
+			assert.strictEqual(result.logs[0].files[2].mode, '100644');
+
+			assert.strictEqual(result.logs[0].files[3].filenameBefore, 'new_and_remove.txt');
+			assert.strictEqual(result.logs[0].files[3].filename, 'new_and_remove.txt');
+			assert.strictEqual(result.logs[0].files[3].type, 'deleted');
+			assert.strictEqual(result.logs[0].files[3].isRenamed, false);
+			assert.strictEqual(result.logs[0].files[3].similarity, false);
+			assert.strictEqual(result.logs[0].files[3].index.from, 'f9016de');
+			assert.strictEqual(result.logs[0].files[3].index.to, '0000000');
+			assert.strictEqual(result.logs[0].files[3].mode, '100644');
 
 			done();
 
@@ -426,16 +484,16 @@ describe('git log 操作', function() {
 		});
 	});
 
-/*
-メモ:
-git log -p --word-diff
-git log --stat
-git log --pretty=oneline
-git log --pretty=short
-git log --pretty=full
-git log --pretty=fuller
-git log --pretty=format:"%h - %an, %ar : %s"
-*/
+	/*
+	MEMO:
+	git log -p --word-diff
+	git log --stat
+	git log --pretty=oneline
+	git log --pretty=short
+	git log --pretty=full
+	git log --pretty=fuller
+	git log --pretty=format:"%h - %an, %ar : %s"
+	*/
 
 });
 
