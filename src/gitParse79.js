@@ -1,1 +1,1 @@
-window.GitParser = require('../libs/main.js');
+window.GitParse79 = require('../libs/main.js');

@@ -67,7 +67,7 @@ gitParse79.git(['status'], function(result){
 
 ### gitparse79 v0.1.2 (リリース日未定)
 
-- ???????????????
+- ブラウザ版の呼び出し名の誤りを修正。
 
 ### gitparse79 v0.1.1 (2019年8月9日)
 

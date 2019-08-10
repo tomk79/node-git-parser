@@ -543,6 +543,6 @@ module.exports = function(cmdAry, result, callback){
 }
 
 },{}],11:[function(require,module,exports){
-window.GitParser = require('../libs/main.js');
+window.GitParse79 = require('../libs/main.js');
 
 },{"../libs/main.js":1}]},{},[11])
