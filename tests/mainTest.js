@@ -8,7 +8,7 @@ const gitRemoteConf = (function( pathJson ){
 		rtn = require(pathJson);
 	}
 	return rtn;
-})(__dirname+'/../git-remote--.json');
+})(__dirname+'/../git-remote.json');
 let gitParser;
 
 describe('インスタンス初期化', function() {
@@ -565,7 +565,7 @@ describe('Errors', function() {
 
 });
 
-describe('Cleaning', function() {
+describe('Cleaning local files', function() {
 
 	it("Clearning data directory", function(done) {
 		this.timeout(60*1000);
