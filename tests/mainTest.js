@@ -2,6 +2,13 @@ const assert = require('assert');
 const childProc = require('child_process');
 const fsEx = require('fs-extra');
 const GitParser = require('../libs/main.js');
+const gitRemoteConf = (function( pathJson ){
+	let rtn = false;
+	if( fsEx.existsSync(pathJson) ){
+		rtn = require(pathJson);
+	}
+	return rtn;
+})(__dirname+'/../git-remote--.json');
 let gitParser;
 
 describe('インスタンス初期化', function() {
