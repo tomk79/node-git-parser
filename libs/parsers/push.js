@@ -24,9 +24,22 @@ module.exports = function(cmdAry, result, callback){
 		// Push new branch
 		if( line.match(/^ \* \[new branch\]\s+([^\s]+) \-\> ([^\s]+)$/) ){
 			result.remotes[currentRemoteUrl].push({
-				affect: 'new',
+				affect: 'added',
 				branchNameFrom: RegExp.$1,
 				remoteBranchName: RegExp.$2
+			});
+			return;
+		}
+
+		// --------------------------------------
+		// Push new branch
+		if( line.match(/^   ([^\s]+)\.\.([^\s]+)\s+([^\s]+) \-\> ([^\s]+)$/) ){
+			result.remotes[currentRemoteUrl].push({
+				affect: 'updated',
+				commitFrom: RegExp.$1,
+				commit: RegExp.$2,
+				branchNameFrom: RegExp.$3,
+				remoteBranchName: RegExp.$4
 			});
 			return;
 		}

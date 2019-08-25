@@ -321,7 +321,7 @@ describe('git remote', function() {
 
 describe('git push', function() {
 
-	it("git push origin test:test", function(done) {
+	it("git push origin test:test (new branch)", function(done) {
 		this.timeout(60*1000);
 
 		gitParser.git(['push', 'origin', 'test:test'], function(result){
@@ -330,13 +330,55 @@ describe('git push', function() {
 			// console.log(result.remotes);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
-			assert.equal(result.remotes[originUrl][0].affect, 'new');
+			assert.equal(result.remotes[originUrl][0].affect, 'added');
 			assert.equal(result.remotes[originUrl][0].branchNameFrom, 'test');
 			assert.equal(result.remotes[originUrl][0].remoteBranchName, 'test');
 
 			done();
 
 		});
+	});
+
+	it("git push origin test:test (update)", function(done) {
+		this.timeout(60*1000);
+
+		// change
+		fsEx.writeFileSync(__dirname+'/data/a.txt', 'test 3'+"\n");
+
+
+		gitParser.git(['add', '.', '-v'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.added.length, 1);
+			assert.strictEqual(result.removed.length, 0);
+
+			gitParser.git(['commit', '-m', 'Commit to test branch'+"\n\n"+'Commited by test code.'], function(result){
+				// console.log(result);
+				assert.equal(typeof(result), typeof({}));
+				assert.equal(typeof(result.stdout), typeof(''));
+				assert.strictEqual(result.code, 0);
+
+				gitParser.git(['push', 'origin', 'test:test'], function(result){
+					// console.log(result);
+					// console.log(result.stdout);
+					// console.log(result.remotes);
+					assert.equal(typeof(result), typeof({}));
+					assert.equal(typeof(result.stdout), typeof(''));
+					assert.equal(result.remotes[originUrl][0].affect, 'updated');
+					assert.equal(typeof(result.remotes[originUrl][0].commit), typeof(''));
+					assert.equal(typeof(result.remotes[originUrl][0].commitFrom), typeof(''));
+					assert.equal(result.remotes[originUrl][0].branchNameFrom, 'test');
+					assert.equal(result.remotes[originUrl][0].remoteBranchName, 'test');
+
+					done();
+
+				});
+
+			});
+
+		});
+
 	});
 });
 
