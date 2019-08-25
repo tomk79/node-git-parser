@@ -569,9 +569,14 @@ describe('Cleaning local files', function() {
 
 	it("Clearning data directory", function(done) {
 		this.timeout(60*1000);
+
 		fsEx.removeSync(__dirname+'/data/');
 		fsEx.mkdirSync(__dirname+'/data/');
 		fsEx.writeFileSync(__dirname+'/data/.gitkeep', '');
+
+		fsEx.removeSync(__dirname+'/remote/');
+		fsEx.mkdirSync(__dirname+'/remote/');
+		fsEx.writeFileSync(__dirname+'/remote/.gitkeep', '');
 
 		done();
 	});

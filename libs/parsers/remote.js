@@ -43,6 +43,10 @@ module.exports = function(cmdAry, result, callback){
 			remotes[name][direction] = url;
 		});
 		result.remotes = remotes;
+
+	}else if(  cmdAry[1] == 'add' ){
+		// git remote add
+		// 出力なし
 	}
 
 	// console.log(result);

@@ -11,17 +11,20 @@ const gitRemoteConf = (function( pathJson ){
 })(__dirname+'/../git-remote.json');
 const url = require('url');
 let gitParser;
-let originUrl = '';
-let parsedUrl = url.parse(gitRemoteConf.url);
-parsedUrl.auth = gitRemoteConf.user+':'+gitRemoteConf.password;
-// console.log(url.format(parsedUrl));
-originUrl = url.format(parsedUrl);
-
+let originUrl = __dirname+'/remote/';
 
 describe('インスタンス初期化', function() {
 
 	it("インスタンス初期化", function(done) {
 		this.timeout(60*1000);
+
+		if( gitRemoteConf ){
+			console.info("\n"+"\n"+'**** git-remote.json found.'+"\n"+"\n");
+			let parsedUrl = url.parse(gitRemoteConf.url);
+			parsedUrl.auth = gitRemoteConf.user+':'+gitRemoteConf.password;
+			// console.log(url.format(parsedUrl));
+			originUrl = url.format(parsedUrl);
+		}
 
 		gitParser = new GitParser(function(cmdAry, callback){
 			var stdout = '';
@@ -61,6 +64,29 @@ describe('git初期化', function() {
 			done();
 
 		});
+	});
+
+	it("git init (remote)", function(done) {
+		this.timeout(60*1000);
+
+		var stdout = '';
+		var _pathCurrentDir = process.cwd();
+		process.chdir( __dirname+'/remote/' );
+
+		var proc = childProc.spawn('git', ['init']);
+		proc.stdout.on('data', function(data){
+			stdout += data;
+		});
+		proc.stderr.on('data', function(data){
+			stdout += data; // エラー出力も stdout に混ぜて送る
+		});
+		proc.on('close', function(code){
+			originUrl = __dirname+'/remote/';
+			done();
+		});
+
+		process.chdir( _pathCurrentDir );
+		return;
 	});
 
 	it("git config user.name \"Tester Tester\"", function(done) {
@@ -232,12 +258,6 @@ describe('git初期化', function() {
 
 describe('git remote', function() {
 
-	before(function () {
-		if (!gitRemoteConf){
-			throw new Error("git-remote.json is not set.");
-		}
-	});
-
 	it("git remote", function(done) {
 		this.timeout(60*1000);
 
@@ -256,7 +276,7 @@ describe('git remote', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['remote', 'add', 'origin', originUrl], function(result){
-			console.log(result);
+			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 
@@ -301,19 +321,18 @@ describe('git remote', function() {
 
 describe('git push', function() {
 
-	before(function () {
-		if (!gitRemoteConf){
-			throw new Error("git-remote.json is not set.");
-		}
-	});
-
 	it("git push origin test:test", function(done) {
 		this.timeout(60*1000);
 
 		gitParser.git(['push', 'origin', 'test:test'], function(result){
 			// console.log(result);
+			// console.log(result.stdout);
+			// console.log(result.remotes);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
+			assert.equal(result.remotes[originUrl][0].affect, 'new');
+			assert.equal(result.remotes[originUrl][0].branchNameFrom, 'test');
+			assert.equal(result.remotes[originUrl][0].remoteBranchName, 'test');
 
 			done();
 
@@ -323,19 +342,17 @@ describe('git push', function() {
 
 describe('Cleaning remote branch', function() {
 
-	before(function () {
-		if (!gitRemoteConf){
-			throw new Error("git-remote.json is not set.");
-		}
-	});
-
 	it("git push -f --delete origin test", function(done) {
 		this.timeout(60*1000);
 
 		gitParser.git(['push', '-f', '--delete', 'origin', 'test'], function(result){
 			// console.log(result);
+			// console.log(result.stdout);
+			// console.log(result.remotes);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
+			assert.equal(result.remotes[originUrl][0].affect, 'deleted');
+			assert.equal(result.remotes[originUrl][0].remoteBranchName, 'test');
 
 			done();
 
@@ -348,9 +365,14 @@ describe('Cleaning local files', function() {
 
 	it("Clearning data directory", function(done) {
 		this.timeout(60*1000);
+
 		fsEx.removeSync(__dirname+'/data/');
 		fsEx.mkdirSync(__dirname+'/data/');
 		fsEx.writeFileSync(__dirname+'/data/.gitkeep', '');
+
+		fsEx.removeSync(__dirname+'/remote/');
+		fsEx.mkdirSync(__dirname+'/remote/');
+		fsEx.writeFileSync(__dirname+'/remote/.gitkeep', '');
 
 		done();
 	});
