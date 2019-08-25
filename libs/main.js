@@ -43,6 +43,7 @@ module.exports = function(fncCallGit){
 			case 'show':
 			case 'remote':
 			case 'push':
+			case 'pull':
 				_this[cmdAry[0]](cmdAry, rtn, function(result){
 					callback(result);
 				});
@@ -66,6 +67,7 @@ module.exports.prototype.log = require('./parsers/log.js');
 module.exports.prototype.show = require('./parsers/show.js');
 module.exports.prototype.remote = require('./parsers/remote.js');
 module.exports.prototype.push = require('./parsers/push.js');
+module.exports.prototype.pull = require('./parsers/pull.js');
 
 /**
  * コマンド配列を解析する

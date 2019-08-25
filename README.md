@@ -69,6 +69,7 @@ gitParse79.git(['status'], function(result){
 
 - `git remote` の解析を追加。
 - `git push` の解析を追加。
+- `git pull` の解析を追加。
 
 ### gitparse79 v0.1.2 (2019年8月10日)
 

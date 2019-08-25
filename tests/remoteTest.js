@@ -11,7 +11,7 @@ const gitRemoteConf = (function( pathJson ){
 })(__dirname+'/../git-remote.json');
 const url = require('url');
 let gitParser;
-let originUrl = __dirname+'/remote/';
+let originUrl = __dirname+'/remote';
 
 describe('インスタンス初期化', function() {
 
@@ -81,7 +81,6 @@ describe('git初期化', function() {
 			stdout += data; // エラー出力も stdout に混ぜて送る
 		});
 		proc.on('close', function(code){
-			originUrl = __dirname+'/remote/';
 			done();
 		});
 
@@ -380,6 +379,66 @@ describe('git push', function() {
 		});
 
 	});
+});
+
+describe('git pull', function() {
+
+	it("git branch --delete test (error)", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['checkout', 'master'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+
+			gitParser.git(['branch', '--delete', 'test'], function(result){
+				// console.log(result);
+				assert.equal(typeof(result), typeof({}));
+				assert.equal(typeof(result.stdout), typeof(''));
+				assert.strictEqual(result.result, false);
+
+				done();
+
+			});
+
+		});
+	});
+
+	it("git branch -D test", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['branch', '-D', 'test'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.result, true);
+			assert.strictEqual(result.branchName, 'test');
+			assert.equal(typeof(result.lastCommit), typeof(''));
+
+			done();
+		});
+
+	});
+
+	it("git pull origin test:test", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['pull', 'origin', 'test:test'], function(result){
+			// console.log(result);
+			// console.log(result.remotes);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.equal(typeof(result.remotes), typeof({}));
+			assert.equal(typeof(result.remotes[originUrl]), typeof([]));
+			assert.strictEqual(result.remotes[originUrl][0].affect, 'added');
+			assert.strictEqual(result.remotes[originUrl][0].branchName, 'test');
+			assert.strictEqual(result.remotes[originUrl][0].remoteBranchNameFrom, 'test');
+
+			done();
+		});
+
+	});
+
 });
 
 describe('Cleaning remote branch', function() {
