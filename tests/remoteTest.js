@@ -11,6 +11,12 @@ const gitRemoteConf = (function( pathJson ){
 })(__dirname+'/../git-remote.json');
 const url = require('url');
 let gitParser;
+let originUrl = '';
+let parsedUrl = url.parse(gitRemoteConf.url);
+parsedUrl.auth = gitRemoteConf.user+':'+gitRemoteConf.password;
+// console.log(url.format(parsedUrl));
+originUrl = url.format(parsedUrl);
+
 
 describe('インスタンス初期化', function() {
 
@@ -236,9 +242,10 @@ describe('git remote', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['remote'], function(result){
-			console.log(result);
+			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
+			assert.equal(typeof(result.remotes), typeof({}));
 
 			done();
 
@@ -248,12 +255,8 @@ describe('git remote', function() {
 	it("git remote add origin", function(done) {
 		this.timeout(60*1000);
 
-		var parsedUrl = url.parse(gitRemoteConf.url);
-		parsedUrl.auth = gitRemoteConf.user+':'+gitRemoteConf.password;
-		// console.log(url.format(parsedUrl));
-
-		gitParser.git(['remote', 'add', 'origin', url.format(parsedUrl)], function(result){
-			// console.log(result);
+		gitParser.git(['remote', 'add', 'origin', originUrl], function(result){
+			console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 
@@ -269,6 +272,8 @@ describe('git remote', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
+			assert.equal(typeof(result.remotes), typeof({}));
+			assert.equal(result.remotes['origin'].name, 'origin');
 
 			done();
 
@@ -282,6 +287,10 @@ describe('git remote', function() {
 			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
+			assert.equal(typeof(result.remotes), typeof({}));
+			assert.equal(result.remotes['origin'].name, 'origin');
+			assert.equal(result.remotes['origin'].fetch, originUrl);
+			assert.equal(result.remotes['origin'].push, originUrl);
 
 			done();
 
