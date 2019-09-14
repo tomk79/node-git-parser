@@ -13,14 +13,12 @@ module.exports = function(cmdAry, result, callback){
 
 	if( cmdAry.length == 1 && cmdAry[0] == 'remote' ){
 		// オプションなし
-		var remotes = {};
+		var remotes = [];
 		lines.forEach(function(line){
 			if(!line.length){return;}
 			var remote = {};
 			remote.name = line;
-			if( !remotes[line] ){
-				remotes[line] = remote;
-			}
+			remotes.push(remote);
 		});
 		result.remotes = remotes;
 
@@ -42,7 +40,10 @@ module.exports = function(cmdAry, result, callback){
 			remotes[name].name = name;
 			remotes[name][direction] = url;
 		});
-		result.remotes = remotes;
+		result.remotes = [];
+		for(var idx in remotes){
+			result.remotes.push(remotes[idx]);
+		}
 
 	}else if(  cmdAry[1] == 'add' ){
 		// git remote add

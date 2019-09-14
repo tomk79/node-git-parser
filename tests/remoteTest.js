@@ -292,7 +292,7 @@ describe('git remote', function() {
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.equal(typeof(result.remotes), typeof({}));
-			assert.equal(result.remotes['origin'].name, 'origin');
+			assert.equal(result.remotes[0].name, 'origin');
 
 			done();
 
@@ -307,9 +307,9 @@ describe('git remote', function() {
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.equal(typeof(result.remotes), typeof({}));
-			assert.equal(result.remotes['origin'].name, 'origin');
-			assert.equal(result.remotes['origin'].fetch, originUrl);
-			assert.equal(result.remotes['origin'].push, originUrl);
+			assert.equal(result.remotes[0].name, 'origin');
+			assert.equal(result.remotes[0].fetch, originUrl);
+			assert.equal(result.remotes[0].push, originUrl);
 
 			done();
 
