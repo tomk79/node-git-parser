@@ -21,7 +21,7 @@
   "dependencies": {},
   "devDependencies": {
     "fs-extra": "^8.1.0",
-    "gulp": "^3.8.10",
+    "gulp": "^4.0.2",
     "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.6.0",
     "gulp-plumber": "^1.0.1",
