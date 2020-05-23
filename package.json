@@ -18,7 +18,9 @@
     "url": "https://github.com/tomk79/node-git-parser/issues"
   },
   "homepage": "https://github.com/tomk79/node-git-parser#readme",
-  "dependencies": {},
+  "dependencies": {
+    "iterate79": "^1.1.1"
+  },
   "devDependencies": {
     "fs-extra": "^8.1.0",
     "gulp": "^4.0.2",
