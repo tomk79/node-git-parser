@@ -26,72 +26,37 @@ module.exports = function(cmdAry, result, callback){
 		}
 
 		// --------------------------------------
-		// Untracked files
+		// Phase switch
 		if( line == 'Untracked files:' ){
-			phase = 'untracked_files_standby';
+			phase = 'untracked_files';
 			return;
-		}else if(phase == 'untracked_files_standby'){
-			if( !line.length ){
-				phase = 'untracked_files';
-				return;
-			}
-		}else if(phase == 'untracked_files'){
-			if( !line.length ){
-				phase = null;
-				return;
-			}
-			if( line.match(/^[\s]*([\s\S]*?)$/g) ){
-				result.notStaged.untracked.push( RegExp.$1 );
-				return;
-			}
+		}else if( line == 'Changes not staged for commit:' ){
+			phase = 'changes_not_staged_for_commit';
+			return;
+		}else if( line == 'Changes to be committed:' ){
+			phase = 'changes_to_be_committed';
 		}
 
-		// --------------------------------------
-		// Changes not staged for commit
-		if( line == 'Changes not staged for commit:' ){
-			phase = 'changes_not_staged_for_commit_standby';
-			return;
-		}else if(phase == 'changes_not_staged_for_commit_standby'){
-			if( !line.length ){
-				phase = 'changes_not_staged_for_commit';
-				return;
+		if(phase == 'untracked_files'){
+			if( line.match(/^[\t]([\s\S]*?)$/g) ){
+				result.notStaged.untracked.push( RegExp.$1 );
 			}
 		}else if(phase == 'changes_not_staged_for_commit'){
-			if( !line.length ){
-				phase = null;
-				return;
-			}
-			if( line.match(/^[\s]*modified\:[\s]+([\s\S]*?)$/g) ){
+			if( line.match(/^[\t]modified\:[\s]+([\s\S]*?)$/g) ){
 				result.notStaged.modified.push( RegExp.$1 );
 				return;
-			}else if( line.match(/^[\s]*deleted\:[\s]+([\s\S]*?)$/g) ){
+			}else if( line.match(/^[\t]deleted\:[\s]+([\s\S]*?)$/g) ){
 				result.notStaged.deleted.push( RegExp.$1 );
 				return;
 			}
-		}
-
-		// --------------------------------------
-		// Staged
-		if( line == 'Changes to be committed:' ){
-			phase = 'changes_to_be_committed_standby';
-			return;
-		}else if(phase == 'changes_to_be_committed_standby'){
-			if( !line.length ){
-				phase = 'changes_to_be_committed';
-				return;
-			}
 		}else if(phase == 'changes_to_be_committed'){
-			if( !line.length ){
-				phase = null;
-				return;
-			}
-			if( line.match(/^[\s]*new\ file\:[\s]+([\s\S]*?)$/g) ){
+			if( line.match(/^[\t]new\ file\:[\s]+([\s\S]*?)$/g) ){
 				result.staged.untracked.push( RegExp.$1 );
 				return;
-			}else if( line.match(/^[\s]*modified\:[\s]+([\s\S]*?)$/g) ){
+			}else if( line.match(/^[\t]modified\:[\s]+([\s\S]*?)$/g) ){
 				result.staged.modified.push( RegExp.$1 );
 				return;
-			}else if( line.match(/^[\s]*deleted\:[\s]+([\s\S]*?)$/g) ){
+			}else if( line.match(/^[\t]deleted\:[\s]+([\s\S]*?)$/g) ){
 				result.staged.deleted.push( RegExp.$1 );
 				return;
 			}
