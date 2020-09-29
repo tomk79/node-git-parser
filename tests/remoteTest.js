@@ -379,6 +379,69 @@ describe('git push', function() {
 		});
 
 	});
+
+	it("git branch", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['branch'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.branches.length, 2);
+			assert.strictEqual(result.branches[0], 'master');
+			assert.strictEqual(result.branches[1], 'test');
+			assert.strictEqual(result.localBranches.length, 2);
+			assert.strictEqual(result.localBranches[0], 'master');
+			assert.strictEqual(result.localBranches[1], 'test');
+			assert.strictEqual(result.remoteBranches, undefined);
+			assert.strictEqual(result.currentBranchName, 'test');
+			done();
+		});
+
+	});
+
+	it("git branch -a", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['branch', '-a'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.branches.length, 3);
+			assert.strictEqual(result.branches[0], 'master');
+			assert.strictEqual(result.branches[1], 'test');
+			assert.strictEqual(result.branches[2], 'remotes/origin/test');
+			assert.strictEqual(result.localBranches.length, 2);
+			assert.strictEqual(result.localBranches[0], 'master');
+			assert.strictEqual(result.localBranches[1], 'test');
+			assert.strictEqual(result.remoteBranches.length, 1);
+			assert.strictEqual(result.remoteBranches[0], 'origin/test');
+			assert.strictEqual(result.currentBranchName, 'test');
+			done();
+		});
+
+	});
+
+	it("git branch -r", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['branch', '-r'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.branches.length, 1);
+			assert.strictEqual(result.branches[0], 'remotes/origin/test');
+			assert.strictEqual(result.localBranches, undefined);
+			assert.strictEqual(result.remoteBranches.length, 1);
+			assert.strictEqual(result.remoteBranches[0], 'origin/test');
+			assert.strictEqual(result.currentBranchName, undefined);
+			done();
+		});
+
+	});
 });
 
 describe('git pull', function() {
