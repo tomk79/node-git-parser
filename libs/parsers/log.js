@@ -44,8 +44,16 @@ module.exports = function(cmdAry, result, callback){
 			fres.code = 0;
 			fres.stdout = logStdout.stdout.join("\n");
 			fres.errors = [];
+
+			var showCmd = [];
+			showCmd.push('show');
+			if( parsedCmd.options['name-status'] ){
+				showCmd.push('--name-status');
+			}
+			showCmd.push(logStdout.commit);
+
 			_this.show(
-				['show', logStdout.commit],
+				showCmd,
 				fres,
 				function(res){
 					delete(res.code);

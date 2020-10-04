@@ -347,8 +347,16 @@ module.exports = function(cmdAry, result, callback){
 			fres.code = 0;
 			fres.stdout = logStdout.stdout.join("\n");
 			fres.errors = [];
+
+			var showCmd = [];
+			showCmd.push('show');
+			if( parsedCmd.options['name-status'] ){
+				showCmd.push('--name-status');
+			}
+			showCmd.push(logStdout.commit);
+
 			_this.show(
-				['show', logStdout.commit],
+				showCmd,
 				fres,
 				function(res){
 					delete(res.code);
@@ -670,7 +678,11 @@ module.exports = function(cmdAry, result, callback){
 			}else if(phase == 'log_commit_files'){
 				if( !line.length ){
 					phase = null;
-					result.files = parseLogFiles(tmpLines);
+					if( parsedCmd.options['name-status'] ){
+						result.files = parseLogFilesNameStatus(tmpLines);
+					}else{
+						result.files = parseLogFiles(tmpLines);
+					}
 					return;
 				}
 				tmpLines.push(line);
@@ -756,6 +768,52 @@ function parseLogFiles(lines){
 		rtn.push(tmpFileDiff);
 		tmpFileDiff = {};
 	}
+	return rtn;
+}
+
+/**
+ * ファイルのdiff部分を解析 (`--name-status` オプションが有効な場合)
+ */
+function parseLogFilesNameStatus(lines){
+	var rtn = [];
+	// console.log(lines);
+
+	lines.forEach(function(line){
+		var tmpFileDiff = {};
+		if( line.match(/^(M|A|D)\t([\s\S]+)$/) ){
+			var tmpTypeInitial = RegExp.$1;
+			var tmpFilePath = RegExp.$2;
+
+			tmpFileDiff.filenameBefore = tmpFilePath;
+			tmpFileDiff.filename = tmpFilePath;
+			switch(tmpTypeInitial){
+				case 'A': tmpFileDiff.type = 'added'; break;
+				case 'M': tmpFileDiff.type = 'changed'; break;
+				case 'D': tmpFileDiff.type = 'deleted'; break;
+			}
+			tmpFileDiff.isRenamed = false;
+			tmpFileDiff.similarity = false;
+
+			rtn.push(tmpFileDiff);
+			return;
+
+		}else if( line.match(/^(R)([0-9]+)\t([^\t]+)\t([^\t]+)$/) ){
+			var tmpTypeInitial = RegExp.$1;
+			var tmpSimilarity = RegExp.$2;
+			var tmpFilePathBefore = RegExp.$3;
+			var tmpFilePath = RegExp.$4;
+
+			tmpFileDiff.filenameBefore = tmpFilePathBefore;
+			tmpFileDiff.filename = tmpFilePath;
+			tmpFileDiff.type = 'changed';
+			tmpFileDiff.isRenamed = true;
+			tmpFileDiff.similarity = tmpSimilarity.replace(/^0/, '') + '%';
+
+			rtn.push(tmpFileDiff);
+			return;
+		}
+	});
+
 	return rtn;
 }
 

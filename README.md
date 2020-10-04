@@ -71,7 +71,8 @@ gitParse79.git(['status'], function(result){
 - `git push` の解析を追加。
 - `git pull` の解析を追加。
 - `git status` が正しく解析できない場合がある不具合を修正。
-- `git branch -a`, `git branch -r` オプションに対応した。
+- `git branch` の `-a` および `-r` オプションに対応した。
+- `git log` および `git show` の `--name-status` オプションに対応した。
 
 ### gitparse79 v0.1.2 (2019年8月10日)
 

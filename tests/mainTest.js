@@ -491,6 +491,49 @@ describe('git log 操作', function() {
 		});
 	});
 
+	it("git log --name-status", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log', '--name-status'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.logs.length, 2);
+			assert.strictEqual(result.logs[0].author, 'Tester Tester');
+			assert.strictEqual(result.logs[0].email, 'tester@example.com');
+
+			// console.log(result.logs[0].files);
+			assert.strictEqual(result.logs[0].files.length, 4);
+			assert.strictEqual(result.logs[0].files[0].filenameBefore, 'a.txt');
+			assert.strictEqual(result.logs[0].files[0].filename, 'a.txt');
+			assert.strictEqual(result.logs[0].files[0].type, 'changed');
+			assert.strictEqual(result.logs[0].files[0].isRenamed, false);
+			assert.strictEqual(result.logs[0].files[0].similarity, false);
+			assert.strictEqual(result.logs[0].files[1].filenameBefore, 'b.txt');
+			assert.strictEqual(result.logs[0].files[1].filename, 'e.txt');
+			assert.strictEqual(result.logs[0].files[1].type, 'changed');
+			assert.strictEqual(result.logs[0].files[1].isRenamed, true);
+			assert.strictEqual(result.logs[0].files[1].similarity, '70%');
+			assert.strictEqual(result.logs[0].files[2].filenameBefore, 'new.txt');
+			assert.strictEqual(result.logs[0].files[2].filename, 'new.txt');
+			assert.strictEqual(result.logs[0].files[2].type, 'added');
+			assert.strictEqual(result.logs[0].files[2].isRenamed, false);
+			assert.strictEqual(result.logs[0].files[2].similarity, false);
+			assert.strictEqual(result.logs[0].files[3].filenameBefore, 'new_and_remove.txt');
+			assert.strictEqual(result.logs[0].files[3].filename, 'new_and_remove.txt');
+			assert.strictEqual(result.logs[0].files[3].type, 'deleted');
+			assert.strictEqual(result.logs[0].files[3].isRenamed, false);
+			assert.strictEqual(result.logs[0].files[3].similarity, false);
+
+			// console.log(result.logs[1].files);
+			assert.strictEqual(result.logs[1].files.length, 6);
+
+			done();
+
+		});
+	});
+
 	/*
 	MEMO:
 	git log -p --word-diff
