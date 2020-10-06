@@ -70,6 +70,7 @@ gitParse79.git(['status'], function(result){
 - `git remote` の解析を追加。
 - `git push` の解析を追加。
 - `git pull` の解析を追加。
+- `git diff` の解析を追加。
 - `git status` が正しく解析できない場合がある不具合を修正。
 - `git branch` の `-a` および `-r` オプションに対応した。
 - `git log` および `git show` の `--name-status` オプションに対応した。

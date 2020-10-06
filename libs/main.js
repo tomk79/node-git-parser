@@ -40,6 +40,7 @@ module.exports = function(fncCallGit){
 			case 'branch':
 			case 'checkout':
 			case 'log':
+			case 'diff':
 			case 'show':
 			case 'remote':
 			case 'push':
@@ -64,6 +65,7 @@ module.exports.prototype.commit = require('./parsers/commit.js');
 module.exports.prototype.branch = require('./parsers/branch.js');
 module.exports.prototype.checkout = require('./parsers/checkout.js');
 module.exports.prototype.log = require('./parsers/log.js');
+module.exports.prototype.diff = require('./parsers/diff.js');
 module.exports.prototype.show = require('./parsers/show.js');
 module.exports.prototype.remote = require('./parsers/remote.js');
 module.exports.prototype.push = require('./parsers/push.js');

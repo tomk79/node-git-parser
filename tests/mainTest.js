@@ -547,6 +547,101 @@ describe('git log 操作', function() {
 
 });
 
+describe('git diff 操作', function() {
+	it("git diff", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log', '--name-status'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.logs.length, 2);
+
+			gitParser.git(['diff', result.logs[1].commit+'...'+result.logs[0].commit], function(result){
+				// console.log(result);
+				assert.equal(typeof(result), typeof({}));
+				assert.equal(typeof(result.stdout), typeof(''));
+				assert.strictEqual(result.code, 0);
+
+				// console.log(result.diff);
+				assert.strictEqual(result.diff.length, 4);
+				assert.strictEqual(result.diff[0].filenameBefore, 'a.txt');
+				assert.strictEqual(result.diff[0].filename, 'a.txt');
+				assert.strictEqual(result.diff[0].type, 'changed');
+				assert.strictEqual(result.diff[0].isRenamed, false);
+				assert.strictEqual(result.diff[0].similarity, false);
+				assert.strictEqual(result.diff[1].filenameBefore, 'b.txt');
+				assert.strictEqual(result.diff[1].filename, 'e.txt');
+				assert.strictEqual(result.diff[1].type, 'changed');
+				assert.strictEqual(result.diff[1].isRenamed, true);
+				assert.strictEqual(result.diff[1].similarity, '70%');
+				assert.strictEqual(result.diff[2].filenameBefore, 'new.txt');
+				assert.strictEqual(result.diff[2].filename, 'new.txt');
+				assert.strictEqual(result.diff[2].type, 'added');
+				assert.strictEqual(result.diff[2].isRenamed, false);
+				assert.strictEqual(result.diff[2].similarity, false);
+				assert.strictEqual(result.diff[3].filenameBefore, 'new_and_remove.txt');
+				assert.strictEqual(result.diff[3].filename, 'new_and_remove.txt');
+				assert.strictEqual(result.diff[3].type, 'deleted');
+				assert.strictEqual(result.diff[3].isRenamed, false);
+				assert.strictEqual(result.diff[3].similarity, false);
+
+				done();
+
+			});
+
+		});
+	});
+
+	it("git diff --name-status", function(done) {
+		this.timeout(60*1000);
+
+		gitParser.git(['log', '--name-status'], function(result){
+			// console.log(result);
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.code, 0);
+			assert.strictEqual(result.logs.length, 2);
+
+			gitParser.git(['diff', '--name-status', result.logs[1].commit+'...'+result.logs[0].commit], function(result){
+				// console.log(result);
+				assert.equal(typeof(result), typeof({}));
+				assert.equal(typeof(result.stdout), typeof(''));
+				assert.strictEqual(result.code, 0);
+
+				// console.log(result.diff);
+				assert.strictEqual(result.diff.length, 4);
+				assert.strictEqual(result.diff[0].filenameBefore, 'a.txt');
+				assert.strictEqual(result.diff[0].filename, 'a.txt');
+				assert.strictEqual(result.diff[0].type, 'changed');
+				assert.strictEqual(result.diff[0].isRenamed, false);
+				assert.strictEqual(result.diff[0].similarity, false);
+				assert.strictEqual(result.diff[1].filenameBefore, 'b.txt');
+				assert.strictEqual(result.diff[1].filename, 'e.txt');
+				assert.strictEqual(result.diff[1].type, 'changed');
+				assert.strictEqual(result.diff[1].isRenamed, true);
+				assert.strictEqual(result.diff[1].similarity, '70%');
+				assert.strictEqual(result.diff[2].filenameBefore, 'new.txt');
+				assert.strictEqual(result.diff[2].filename, 'new.txt');
+				assert.strictEqual(result.diff[2].type, 'added');
+				assert.strictEqual(result.diff[2].isRenamed, false);
+				assert.strictEqual(result.diff[2].similarity, false);
+				assert.strictEqual(result.diff[3].filenameBefore, 'new_and_remove.txt');
+				assert.strictEqual(result.diff[3].filename, 'new_and_remove.txt');
+				assert.strictEqual(result.diff[3].type, 'deleted');
+				assert.strictEqual(result.diff[3].isRenamed, false);
+				assert.strictEqual(result.diff[3].similarity, false);
+
+				done();
+
+			});
+
+		});
+	});
+
+});
+
 describe('git show 操作', function() {
 
 	it("git show", function(done) {
