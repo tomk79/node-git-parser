@@ -157,7 +157,7 @@ function parseLogFilesNameStatus(lines){
 
 	lines.forEach(function(line){
 		var tmpFileDiff = {};
-		if( line.match(/^(M|A|D)\t([\s\S]+)$/) ){
+		if( line.match(/^(M|A|D|C|T|U|X|B|UU)\t([\s\S]+)$/) ){
 			var tmpTypeInitial = RegExp.$1;
 			var tmpFilePath = RegExp.$2;
 
@@ -167,6 +167,12 @@ function parseLogFilesNameStatus(lines){
 				case 'A': tmpFileDiff.type = 'added'; break;
 				case 'M': tmpFileDiff.type = 'changed'; break;
 				case 'D': tmpFileDiff.type = 'deleted'; break;
+				case 'C': tmpFileDiff.type = 'copied'; break;
+				case 'T': tmpFileDiff.type = 'type_changed'; break;
+				case 'U': tmpFileDiff.type = 'unmerged'; break;
+				case 'UU': tmpFileDiff.type = 'unmerged'; break;
+				case 'X': tmpFileDiff.type = 'unknown'; break;
+				case 'B': tmpFileDiff.type = 'pairing_broken'; break;
 			}
 			tmpFileDiff.isRenamed = false;
 			tmpFileDiff.similarity = false;
