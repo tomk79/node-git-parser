@@ -133,6 +133,7 @@ describe('git基本操作', function() {
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.notStaged.untracked.length, 6);
+			assert.strictEqual(result.isUnmerged, false);
 
 			done();
 

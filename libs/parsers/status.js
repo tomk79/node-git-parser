@@ -14,6 +14,10 @@ module.exports = function(cmdAry, result, callback){
 	result.notStaged.untracked = [];
 	result.notStaged.modified = [];
 	result.notStaged.deleted = [];
+	result.unmerged = {};
+	result.unmerged.bothAdded = [];
+	result.unmerged.bothModified = [];
+	result.isUnmerged = false;
 	// console.log(lines);
 
 	it79.ary(
@@ -42,6 +46,11 @@ module.exports = function(cmdAry, result, callback){
 				phase = 'changes_to_be_committed';
 				it1.next();
 				return;
+			}else if( line == 'Unmerged paths:' ){
+				phase = 'unmerged_paths';
+				result.isUnmerged = true; // コンフリクトが発生中
+				it1.next();
+				return;
 			}
 
 			if(phase == 'untracked_files'){
@@ -61,6 +70,12 @@ module.exports = function(cmdAry, result, callback){
 					result.staged.modified.push( RegExp.$1 );
 				}else if( line.match(/^[\t]deleted\:[\s]+([\s\S]*?)$/g) ){
 					result.staged.deleted.push( RegExp.$1 );
+				}
+			}else if(phase == 'unmerged_paths'){
+				if( line.match(/^[\t]both\ added\:[\s]+([\s\S]*?)$/g) ){
+					result.unmerged.bothAdded.push( RegExp.$1 );
+				}else if( line.match(/^[\t]both\ modified\:[\s]+([\s\S]*?)$/g) ){
+					result.unmerged.bothModified.push( RegExp.$1 );
 				}
 			}
 			it1.next();
