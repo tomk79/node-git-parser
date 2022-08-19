@@ -6,6 +6,8 @@ module.exports = function(cmdAry, result, callback){
 	var it79 = require('iterate79');
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	var phase = null;
+	result.currentBranchName = null;
+	result.remoteBranchName = null;
 	result.staged = {};
 	result.staged.untracked = [];
 	result.staged.modified = [];
@@ -24,33 +26,43 @@ module.exports = function(cmdAry, result, callback){
 		lines,
 		function( it1, line, idx ){
 
+
+			// コメント記号を削除
+			line = line.replace(/^\#\ ?/, '');
+
+
 			// --------------------------------------
 			// Branch Name
 			if( !phase ){
 				if( line.match(/^On\ branch\ ([\s\S]*)$/g) ){
 					result.currentBranchName = RegExp.$1;
 				}
+				if( line.match(/^Your\ branch\ is\ up\ to\ date\ with\ \'([\s\S]*)\'\.$/g) ){
+					result.remoteBranchName = RegExp.$1;
+				}
 			}
 
 			// --------------------------------------
 			// Phase switch
-			if( line == 'Untracked files:' ){
-				phase = 'untracked_files';
-				it1.next();
-				return;
-			}else if( line == 'Changes not staged for commit:' ){
-				phase = 'changes_not_staged_for_commit';
-				it1.next();
-				return;
-			}else if( line == 'Changes to be committed:' ){
-				phase = 'changes_to_be_committed';
-				it1.next();
-				return;
-			}else if( line == 'Unmerged paths:' ){
-				phase = 'unmerged_paths';
-				result.isUnmerged = true; // コンフリクトが発生中
-				it1.next();
-				return;
+			switch( line ){
+				case 'Untracked files:':
+					phase = 'untracked_files';
+					it1.next();
+					return;
+				case 'Changed but not updated:':
+				case 'Changes not staged for commit:':
+					phase = 'changes_not_staged_for_commit';
+					it1.next();
+					return;
+				case 'Changes to be committed:':
+					phase = 'changes_to_be_committed';
+					it1.next();
+					return;
+				case 'Unmerged paths:':
+					phase = 'unmerged_paths';
+					result.isUnmerged = true; // コンフリクトが発生中
+					it1.next();
+					return;
 			}
 
 			if(phase == 'untracked_files'){
@@ -81,7 +93,6 @@ module.exports = function(cmdAry, result, callback){
 			it1.next();
 		},
 		function(){
-			// console.log(result);
 			callback(result);
 		}
 	);
