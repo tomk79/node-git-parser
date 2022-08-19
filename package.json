@@ -5,7 +5,13 @@
   "private": false,
   "main": "libs/main.js",
   "scripts": {
-    "start": "gulp watch",
+    "dev": "npm run development",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "prod": "npm run production",
+    "production": "mix --production",
     "test": "mocha --ui tdd ./tests/"
   },
   "repository": {
@@ -22,13 +28,12 @@
     "iterate79": "^1.1.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
     "fs-extra": "^8.1.0",
-    "gulp": "^4.0.2",
-    "gulp-browserify": "^0.5.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-plumber": "^1.0.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.2.0",
-    "mocha": "^2.1.0"
+    "laravel-mix": "^6.0.48",
+    "mocha": "^2.1.0",
+    "stream-browserify": "^2.0.2"
   }
 }
