@@ -9,12 +9,11 @@ module.exports = function(cmdAry, result, callback){
     result.logs = [];
     var tmpLog = {},
 		tmpLogs = [];
-	// console.log(lines);
-
 	var parsedCmd = this.parseCmdAry(cmdAry);
-	// console.log(parsedCmd);
 
-	if( parsedCmd.options.pretty ){
+	if( !result.stdout ){
+		// Nothing to do
+	}else if( parsedCmd.options.pretty ){
 		// TODO: 未対応
 	}else if( parsedCmd.options.stat ){
 		// TODO: 未対応
@@ -64,7 +63,5 @@ module.exports = function(cmdAry, result, callback){
 			);
 		});
 	}
-
-	// console.log(result);
 	callback(result);
 }

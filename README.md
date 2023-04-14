@@ -69,6 +69,7 @@ gitParse79.git(['status'], function(result){
 
 - `git status` の解析結果に `remoteBranchName` を追加した。
 - 標準出力がコメントアウトされている場合にも解析できるようにした。
+- `git log` で、対象が抽出されない場合に起きるエラーを修正した。
 
 ### gitparse79 v0.1.3 (2022年6月5日)
 
