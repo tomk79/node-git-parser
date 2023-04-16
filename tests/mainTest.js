@@ -360,7 +360,6 @@ describe('git log 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
@@ -370,10 +369,10 @@ describe('git log 操作', function() {
 			assert.strictEqual(result.logs[0].author, 'Tester Tester');
 			assert.strictEqual(result.logs[0].email, 'tester@example.com');
 			assert.equal(typeof(result.logs[0].date), typeof(''));
+			assert.ok(result.logs[0].timestamp > 100);
 			assert.ok(result.logs[0].date.length > 0);
 
 			done();
-
 		});
 	});
 
@@ -381,10 +380,6 @@ describe('git log 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log', '-p'], function(result){
-			// console.log(result);
-			// result.logs.forEach(function(line){
-			// 	console.log(line);
-			// });
 
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
@@ -395,9 +390,9 @@ describe('git log 操作', function() {
 			assert.strictEqual(result.logs[0].author, 'Tester Tester');
 			assert.strictEqual(result.logs[0].email, 'tester@example.com');
 			assert.equal(typeof(result.logs[0].date), typeof(''));
+			assert.ok(result.logs[0].timestamp > 100);
 			assert.ok(result.logs[0].date.length > 0);
 
-			// console.log(result.logs[0].files);
 			assert.strictEqual(result.logs[0].files.length, 4);
 
 			assert.strictEqual(result.logs[0].files[0].filenameBefore, 'a.txt');
@@ -445,7 +440,6 @@ describe('git log 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log', '-p', '--word-diff'], function(result){
-			// console.log(result.logs);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
@@ -462,7 +456,6 @@ describe('git log 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log', '--stat'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
@@ -479,7 +472,6 @@ describe('git log 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log', '--pretty=oneline'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
@@ -496,7 +488,6 @@ describe('git log 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log', '--name-status'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
@@ -504,7 +495,6 @@ describe('git log 操作', function() {
 			assert.strictEqual(result.logs[0].author, 'Tester Tester');
 			assert.strictEqual(result.logs[0].email, 'tester@example.com');
 
-			// console.log(result.logs[0].files);
 			assert.strictEqual(result.logs[0].files.length, 4);
 			assert.strictEqual(result.logs[0].files[0].filenameBefore, 'a.txt');
 			assert.strictEqual(result.logs[0].files[0].filename, 'a.txt');
@@ -527,7 +517,6 @@ describe('git log 操作', function() {
 			assert.strictEqual(result.logs[0].files[3].isRenamed, false);
 			assert.strictEqual(result.logs[0].files[3].similarity, false);
 
-			// console.log(result.logs[1].files);
 			assert.strictEqual(result.logs[1].files.length, 6);
 
 			done();
@@ -553,19 +542,16 @@ describe('git diff 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log', '--name-status'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.logs.length, 2);
 
 			gitParser.git(['diff', result.logs[1].commit+'...'+result.logs[0].commit], function(result){
-				// console.log(result);
 				assert.equal(typeof(result), typeof({}));
 				assert.equal(typeof(result.stdout), typeof(''));
 				assert.strictEqual(result.code, 0);
 
-				// console.log(result.diff);
 				assert.strictEqual(result.diff.length, 4);
 				assert.strictEqual(result.diff[0].filenameBefore, 'a.txt');
 				assert.strictEqual(result.diff[0].filename, 'a.txt');
@@ -599,19 +585,16 @@ describe('git diff 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log', '--name-status'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 0);
 			assert.strictEqual(result.logs.length, 2);
 
 			gitParser.git(['diff', '--name-status', result.logs[1].commit+'...'+result.logs[0].commit], function(result){
-				// console.log(result);
 				assert.equal(typeof(result), typeof({}));
 				assert.equal(typeof(result.stdout), typeof(''));
 				assert.strictEqual(result.code, 0);
 
-				// console.log(result.diff);
 				assert.strictEqual(result.diff.length, 4);
 				assert.strictEqual(result.diff[0].filenameBefore, 'a.txt');
 				assert.strictEqual(result.diff[0].filename, 'a.txt');
@@ -649,12 +632,10 @@ describe('git show 操作', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['log'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result.logs[0].commit), typeof(''));
 
 			var commit = result.logs[0].commit;
 			gitParser.git(['show', commit], function(result){
-				// console.log(result);
 				assert.equal(typeof(result), typeof({}));
 				assert.equal(typeof(result.stdout), typeof(''));
 				assert.strictEqual(result.code, 0);
@@ -666,7 +647,6 @@ describe('git show 操作', function() {
 				assert.equal(typeof(result.date), typeof(''));
 				assert.ok(result.date.length > 0);
 
-				// console.log(result.files);
 				assert.strictEqual(result.files.length, 4);
 
 				assert.strictEqual(result.files[0].filenameBefore, 'a.txt');
@@ -691,7 +671,6 @@ describe('Errors', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['foobar'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.code, 1);

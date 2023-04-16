@@ -6,10 +6,8 @@ module.exports = function(cmdAry, result, callback){
 	var lines = result.stdout.split(/\r\n|\r|\n/g);
 	var phase = null;
     var tmpLines=[], tmpLog;
-	// console.log(lines);
 
 	var parsedCmd = this.parseCmdAry(cmdAry);
-	// console.log(parsedCmd);
 
 	if( parsedCmd.options.pretty || parsedCmd.options.format ){
 		// TODO: 未対応
@@ -69,7 +67,6 @@ module.exports = function(cmdAry, result, callback){
 		});
 	}
 
-	// console.log(result);
 	callback(result);
 }
 
@@ -88,6 +85,13 @@ function parseLogHeaders(tmpLog, lines){
 			return;
 		}
 	});
+
+	tmpLog.timestamp = null;
+	if( tmpLog.date ){
+		// コミット日時情報をタイムスタンプ化 (ms)
+		tmpLog.timestamp = Date.parse(tmpLog.date);
+	}
+
 	return tmpLog;
 }
 
@@ -98,7 +102,6 @@ function parseLogFiles(lines){
 	var phase = null;
 	var rtn = [];
 	var tmpFileDiff = {};
-	// console.log(lines);
 
 	lines.forEach(function(line){
 		if( line.match(/^diff\ \-\-git\ a\/([\s\S]*?) b\/([\s\S]*?)$/) ){
@@ -153,7 +156,6 @@ function parseLogFiles(lines){
  */
 function parseLogFilesNameStatus(lines){
 	var rtn = [];
-	// console.log(lines);
 
 	lines.forEach(function(line){
 		var tmpFileDiff = {};

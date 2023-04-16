@@ -15,7 +15,6 @@ describe('バリエーション', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['status'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.currentBranchName, 'main');
@@ -39,7 +38,6 @@ describe('バリエーション', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['status'], function(result){
-			// console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.currentBranchName, 'main');
@@ -62,7 +60,6 @@ describe('バリエーション', function() {
 		this.timeout(60*1000);
 
 		gitParser.git(['diff', '-U12'], function(result){
-			console.log(result);
 			assert.equal(typeof(result), typeof({}));
 			assert.equal(typeof(result.stdout), typeof(''));
 			assert.strictEqual(result.diff.length, 1);
