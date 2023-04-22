@@ -1,6 +1,6 @@
 {
   "name": "gitparse79",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "gitコマンドの出力を解析して構造化します。",
   "private": false,
   "main": "libs/main.js",
