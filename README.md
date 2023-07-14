@@ -65,7 +65,7 @@ gitParse79.git(['status'], function(result){
 
 ## 更新履歴 - Change log
 
-### gitparse79 v0.2.1 (リリース日未定)
+### gitparse79 v0.2.1 (2023年7月14日)
 
 - `git push` の解析を改善した。
 
