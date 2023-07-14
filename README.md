@@ -65,6 +65,10 @@ gitParse79.git(['status'], function(result){
 
 ## 更新履歴 - Change log
 
+### gitparse79 v0.2.1 (リリース日未定)
+
+- `git push` の解析を改善した。
+
 ### gitparse79 v0.2.0 (2023年4月22日)
 
 - `git status` の解析結果に `remoteBranchName` を追加した。

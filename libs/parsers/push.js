@@ -12,7 +12,7 @@ module.exports = function(cmdAry, result, callback){
 
 		// --------------------------------------
 		// Current Remote URL
-		if( line.match(/^To ([^\s]+)$/) ){
+		if( line.match(/^(?:remote\:[\s]*)?To ([^\s]+)$/) ){
 			currentRemoteUrl =RegExp.$1;
 			if(!result.remotes[currentRemoteUrl]){
 				result.remotes[currentRemoteUrl] = [];

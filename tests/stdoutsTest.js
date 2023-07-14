@@ -73,4 +73,52 @@ describe('バリエーション', function() {
 		});
 	});
 
+	it("git push", function(done) {
+		const gitParser = new GitParser(function(cmdAry, callback){
+			var stdout = fsEx.readFileSync(__dirname + '/stdouts/git-push.txt');
+			callback(0, stdout.toString());
+			return;
+		});
+
+		this.timeout(60*1000);
+
+		gitParser.git(['push'], function(result){
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.errors.length, 0);
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'].length, 1);
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].affect, 'updated');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].commitFrom, '384d774');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].commit, 'd564a25');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].branchNameFrom, 'main');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].remoteBranchName, 'main');
+			done();
+
+		});
+	});
+
+	it("git push (remote:)", function(done) {
+		const gitParser = new GitParser(function(cmdAry, callback){
+			var stdout = fsEx.readFileSync(__dirname + '/stdouts/git-push-remote.txt');
+			callback(0, stdout.toString());
+			return;
+		});
+
+		this.timeout(60*1000);
+
+		gitParser.git(['push'], function(result){
+			assert.equal(typeof(result), typeof({}));
+			assert.equal(typeof(result.stdout), typeof(''));
+			assert.strictEqual(result.errors.length, 0);
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'].length, 1);
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].affect, 'updated');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].commitFrom, '384d774');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].commit, 'd564a25');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].branchNameFrom, 'main');
+			assert.strictEqual(result.remotes['https://xxxxxxxxxx.com/pickles2/pickles2.git'][0].remoteBranchName, 'main');
+			done();
+
+		});
+	});
+
 });

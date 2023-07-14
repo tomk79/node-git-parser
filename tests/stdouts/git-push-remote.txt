@@ -1,0 +1,3 @@
+warning: unable to access '/usr/etc/gitattributes': ????????
+remote: To https://xxxxxxxxxx.com/pickles2/pickles2.git
+   384d774..d564a25  main -> main
