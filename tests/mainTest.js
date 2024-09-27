@@ -18,6 +18,7 @@ describe('インスタンス初期化', function() {
 
 		gitParser = new GitParser(function(cmdAry, callback){
 			var stdout = '';
+			var stderr = '';
 			var _pathCurrentDir = process.cwd();
 			process.chdir( __dirname+'/data/' );
 
@@ -26,10 +27,10 @@ describe('インスタンス初期化', function() {
 				stdout += data;
 			});
 			proc.stderr.on('data', function(data){
-				stdout += data; // エラー出力も stdout に混ぜて送る
+				stderr += data;
 			});
 			proc.on('close', function(code){
-				callback(code, stdout);
+				callback(code, stdout, stderr);
 			});
 
 			process.chdir( _pathCurrentDir );

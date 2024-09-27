@@ -8,15 +8,21 @@ module.exports = function(fncCallGit){
 		callback(0, '');
 	}
 	this.git = function(cmdAry, callback){
-		fncCallGit(cmdAry, function(code, stdout){
-			_this.parse(cmdAry, code, stdout, callback);
+		fncCallGit(cmdAry, function(code, stdout, stderr){
+			_this.parse(
+				cmdAry,
+				code,
+				stdout,
+				stderr,
+				callback);
 			return;
 		});
 	}
-	this.parse = function(cmdAry, code, stdout, callback){
+	this.parse = function(cmdAry, code, stdout, stderr, callback){
 		var rtn = {
 			'code': code,
 			'stdout': stdout,
+			'stderr': stderr,
 			'errors': []
 		};
 		if( stdout.match(/^fatal\:\ ([\s\S]*)$/g) ){
