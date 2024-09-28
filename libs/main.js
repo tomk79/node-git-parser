@@ -21,11 +21,11 @@ module.exports = function(fncCallGit){
 	this.parse = function(cmdAry, code, stdout, stderr, callback){
 		var rtn = {
 			'code': code,
-			'stdout': stdout,
-			'stderr': stderr,
+			'stdout': stdout || '',
+			'stderr': stderr || '',
 			'errors': []
 		};
-		if( stdout.match(/^fatal\:\ ([\s\S]*)$/g) ){
+		if( code && rtn.stderr.match(/^fatal\:\ ([\s\S]*)$/gi) ){
 			rtn.errors.push( RegExp.$1 );
 			callback(rtn);
 			return;
