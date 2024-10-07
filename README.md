@@ -67,7 +67,7 @@ gitParse79.git(['status'], function(result){
 
 ## 更新履歴 - Change log
 
-### gitparse79 v0.3.0 (リリース日未定)
+### gitparse79 v0.3.0 (2024年10月7日)
 
 - `parse()` の第4引数に `stderr` を加えた。
 - エラー処理の改善。
